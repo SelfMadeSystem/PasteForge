@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import uwu.smsgamer.pasteclient.events.Render3DEvent;
+import uwu.smsgamer.pasteclient.utils.RaycastUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,14 +36,15 @@ public class MixinEntityRenderer {
      * @author Sms_Gamer_3808
      */
     @Overwrite
-    public void getMouseOver(float p_getMouseOver_1_) {
-        Entity entity = this.mc.getRenderViewEntity();
+    public void getMouseOver(float partialTicks) { // TODO: 2020-11-19 Reach & KillAura (Custom rotations)
+        mc.objectMouseOver = RaycastUtils.getRayTraceResult(partialTicks);
+        /*Entity entity = this.mc.getRenderViewEntity();
         if (entity != null && this.mc.world != null) {
             this.mc.mcProfiler.startSection("pick");
             this.mc.pointedEntity = null;
             double d0 = this.mc.playerController.getBlockReachDistance();
-            this.mc.objectMouseOver = entity.rayTrace(d0, p_getMouseOver_1_);
-            Vec3d vec3d = entity.getPositionEyes(p_getMouseOver_1_);
+            this.mc.objectMouseOver = entity.rayTrace(d0, partialTicks);
+            Vec3d vec3d = entity.getPositionEyes(partialTicks);
             boolean flag = false;
             double d1 = d0;
             if (this.mc.playerController.extendedReach()) {
@@ -102,7 +104,6 @@ public class MixinEntityRenderer {
             }
 
             this.mc.mcProfiler.endSection();
-        }
-
+        }*/
     }
 }

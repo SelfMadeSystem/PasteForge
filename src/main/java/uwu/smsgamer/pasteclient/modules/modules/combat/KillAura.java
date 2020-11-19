@@ -1,0 +1,200 @@
+package uwu.smsgamer.pasteclient.modules.modules.combat;
+
+import com.darkmagician6.eventapi.EventTarget;
+import com.darkmagician6.eventapi.types.EventType;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.*;
+import uwu.smsgamer.pasteclient.events.*;
+import uwu.smsgamer.pasteclient.injection.interfaces.IMixinMouseHelper;
+import uwu.smsgamer.pasteclient.modules.*;
+import uwu.smsgamer.pasteclient.utils.*;
+import uwu.smsgamer.pasteclient.values.*;
+
+import java.awt.*;
+
+public class KillAura extends Module {
+
+    public IntChoiceValue targetMode = addIntChoice("TargetMode      ->", "Which entities to target first.", 0,
+      0, "Closest",
+      1, "Lowest Health",
+      2, "Least Angle");
+    public IntChoiceValue aimMode = addIntChoice("AimMode", "How to aim at entities.", 0,
+      0, "Normal",
+      0, "GCD Patch");
+    public IntChoiceValue aimWhere = addIntChoice("AimWhere", "Where to aim on the entity.", 0,
+      0, "Auto",
+      1, "Top",
+      2, "Eyes",
+      3, "Middle",
+      4, "Legs",
+      5, "Bottom",
+      6, "Custom");
+    public NumberValue customAim = (NumberValue) addValue(new NumberValue("CustomAim", "Where to aim.", 0.5, 0, 1, 0.01, NumberValue.NumberType.PERCENT) {
+        @Override
+        public boolean isVisible() {
+            return aimWhere.getValue() == 6;
+        }
+    });
+    public NumberValue hLimit = addPer("HLimit", "Horizontal limit on entity for aiming.", 1);
+    public NumberValue aimLimit = (NumberValue) addValue(new NumberValue("AimLimit", "Limits your aim in degrees.", 90, 0, 90, 1, NumberValue.NumberType.INTEGER));
+    public NumberValue aimLimitVary = (NumberValue) addValue(new NumberValue("AimLimitVary", "Varies the limit of your aim in degrees.", 5, 0, 15, 0.5, NumberValue.NumberType.DECIMAL));
+    public NumberValue aimRandomYaw = (NumberValue) addValue(new NumberValue("AimRandomYaw", "Randomizes your yaw in degrees.", 2, 0, 15, 0.1, NumberValue.NumberType.DECIMAL));
+    public NumberValue aimRandomPitch = (NumberValue) addValue(new NumberValue("AimRandomPitch", "Error loading description.", 2, 0, 15, 0.1, NumberValue.NumberType.DECIMAL));
+    public BoolValue silent = addBool("Silent", "If the KillAura rotations are silent.", true);
+    public BoolValue render = addBool("Render", "Render where you're aiming at.", true);
+    public NumberValue maxRange;
+    public NumberValue maxAngle;
+    public NumberValue minCPS = (NumberValue) addValue(new NumberValue("MinCPS", "Minimum CPS.", 9, 0, 20, 1, NumberValue.NumberType.INTEGER));
+    public NumberValue maxCPS = (NumberValue) addValue(new NumberValue("MaxCPS", "Maximum CPS.", 13, 0, 20, 1, NumberValue.NumberType.INTEGER));
+    public NumberValue reach = (NumberValue) addValue(new NumberValue("Reach", "Reach for hitting entity.", 3, 0, 8, 0.025, NumberValue.NumberType.DECIMAL));
+    public KillAura() {
+        super("KillAura", "Automatically attacks stuff around you.", ModuleCategory.COMBAT);
+        targetMode.addChild(maxRange = genDeci("MaxRange", "Maximum distance the entity has to be in blocks.", 6, 2, 16, 0.5));
+        targetMode.addChild(maxAngle = genInt("MaxAngle", "Maximum angle the entity has to be in degrees.", 180, 0, 180));
+    }
+
+    public float yaw;
+    public float pitch;
+    public float prevYaw;
+    public float prevPitch;
+
+    @Override
+    protected void onEnable() {
+        prevYaw = mc.player.prevRotationYaw;
+        prevPitch = mc.player.prevRotationPitch;
+        yaw = mc.player.rotationYaw;
+        pitch = mc.player.rotationPitch;
+    }
+
+    @EventTarget
+    private void onRender(Render3DEvent event) {
+        if (!getState()) return;
+        Entity target = null;
+        double range = this.maxRange.getValue();
+        double angle = this.maxAngle.getValue();
+        double aimLimit = this.aimLimit.getValue() + (Math.random() * aimLimitVary.getValue() - aimLimitVary.getValue() / 2);
+        switch (targetMode.getValue()) {
+            case 0:
+                target = TargetUtil.getClosestEntity(range, angle);
+                break;
+            case 1:
+                target = TargetUtil.getLowestHealthEntity(range, angle);
+                break;
+            case 2:
+                target = TargetUtil.getLowestAngleEntity(range, angle);
+                break;
+        }
+        if (target != null) {
+            if (render.getValue()) render(target);
+            RotationUtil util = new RotationUtil(target);
+            boolean setY = aimWhere.getValue() != 0;
+            double sY = getYPos();
+
+            Rotation rotation = util.getClosestRotation(setY, sY, hLimit.getValue());
+            rotation = RotationUtil.limitAngleChange(new Rotation(yaw, pitch), rotation, aimLimit);
+            Rotation r = RotationUtil.rotationDiff(rotation, new Rotation(yaw, pitch));
+            boolean moving = r.yaw != 0 || r.pitch != 0;
+            rotation = new Rotation(rotation.yaw + (!moving ? 0 : aimRandomYaw.getValue() * Math.random() - aimRandomYaw.getValue() / 2),
+              rotation.pitch + (!moving ? 0 : aimRandomPitch.getValue() * Math.random() - aimRandomPitch.getValue() / 2));
+            switch (aimMode.getValue()) {
+                case 1:
+                    double f = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+                    double gcd = f * f * f * 1.2F;
+                    rotation = new Rotation(rotation.yaw - rotation.yaw % gcd, rotation.pitch - rotation.pitch % gcd);
+                case 0:
+                    prevYaw = yaw;
+                    prevPitch = pitch;
+                    yaw = rotation.yaw.floatValue();
+                    pitch = rotation.pitch.floatValue();
+                    if (!silent.getValue()) rotation.toPlayer();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + aimMode.getValue());
+            }
+            attack();
+        } else {
+            prevYaw = yaw;
+            prevPitch = pitch;
+            yaw = mc.player.rotationYaw;
+            pitch = mc.player.rotationPitch;
+        }
+    }
+
+    @EventTarget
+    private void onPacket(PacketEvent event) {
+        if (!getState()) return;
+        Packet<?> packet = event.getPacket();
+        if (packet.getClass().equals(CPacketPlayer.Rotation.class)) {
+            event.setPacket(new CPacketPlayer.Rotation(yaw, pitch, ((CPacketPlayer.Rotation) packet).isOnGround()));
+        } else if (packet.getClass().equals(CPacketPlayer.PositionRotation.class)) {
+            event.setPacket(new CPacketPlayer.PositionRotation(((CPacketPlayer.PositionRotation) packet).getX(mc.player.posX),
+              ((CPacketPlayer.PositionRotation) packet).getY(mc.player.posY),
+              ((CPacketPlayer.PositionRotation) packet).getZ(mc.player.posZ),
+              pitch, yaw, ((CPacketPlayer.PositionRotation) packet).isOnGround()));
+        }
+    }
+
+    @EventTarget
+    private void onUpdate(UpdateEvent event) {
+        if (!getState()) return;
+        if (event.getEventType().equals(EventType.POST)) {
+            attack();
+        }
+    }
+
+    private int lastAttack;
+    private int nextAttack;
+
+    public void attack() {
+        if (lastAttack++ >= nextAttack) {
+            mc.player.swingArm(EnumHand.MAIN_HAND);
+            RayTraceResult result = RaycastUtils.getRayTraceResult(1, new EntityImpl(mc.world, mc.player, yaw, pitch, prevYaw, prevPitch), reach.getValue(), 6);
+            if (result.typeOfHit.equals(RayTraceResult.Type.ENTITY)) {
+                mc.playerController.attackEntity(mc.player, result.entityHit);
+            } else if (result.typeOfHit.equals(RayTraceResult.Type.BLOCK)) {
+                mc.playerController.clickBlock(result.getBlockPos(), result.sideHit);
+            }
+            double min = minCPS.getValue();
+            double max = maxCPS.getValue();
+            nextAttack = (int) (Math.random() * (max-min) + min);
+            lastAttack = 0;
+        }
+    }
+
+    @Override
+    protected void onDisable() {
+        ((IMixinMouseHelper) mc.mouseHelper).reset();
+    }
+
+    public double getYPos() {
+        switch (aimWhere.getValue()) {
+            case 1:
+                return 1;
+            case 2:
+                return 0.85;
+            case 3:
+                return 0.5;
+            case 4:
+                return 0.15;
+            case 5:
+            default:
+                return 0;
+            case 6:
+                return customAim.getValue();
+        }
+    }
+
+    private void render(Entity entity) {
+        AxisAlignedBB aabb = entity.getEntityBoundingBox();
+        double lenX = (aabb.maxX - aabb.minX) / 2;
+        double lenY = (aabb.maxY - aabb.minY);
+        double lenZ = (aabb.maxZ - aabb.minZ) / 2;
+        boolean setY = aimWhere.getValue() != 0;
+        aabb = new AxisAlignedBB(entity.posX - lenX * hLimit.getValue(), entity.posY + lenY * (setY ? getYPos() : 0), entity.posZ - lenZ * hLimit.getValue(),
+          entity.posX + lenX * hLimit.getValue(), entity.posY + lenY * (setY ? getYPos() : 1), entity.posZ + lenZ * hLimit.getValue());
+        GLUtil.drawAxisAlignedBBRel(aabb, new Color(255, 0, 0, 64));
+    }
+}

@@ -76,6 +76,7 @@ public class Disabler extends Module {
 
     @EventTarget
     private void onPacket(PacketEvent event) {
+        if (!getState()) return;
         if (mode.getValue().equals(0) && detectPacket.getValue().isInstance(event.getPacket())) {
             try {
                 Class<? extends Packet<?>> packetClass = sendPacket.getValue();

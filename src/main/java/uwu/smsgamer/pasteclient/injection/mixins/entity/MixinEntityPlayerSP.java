@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import uwu.smsgamer.pasteclient.events.MotionUpdateEvent;
+import uwu.smsgamer.pasteclient.events.*;
 
 @Mixin(EntityPlayerSP.class)
 public class MixinEntityPlayerSP extends AbstractClientPlayer {
@@ -64,5 +64,15 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
         rotationPitch = cachedRotationPitch;
 
         EventManager.call(new MotionUpdateEvent(EventType.POST, posX, posY, posZ, rotationYaw, rotationPitch, onGround));
+    }
+
+    @Inject(method = "onUpdate", at = @At("HEAD"))
+    private void onUpdatePre(CallbackInfo ci) {
+        EventManager.call(new UpdateEvent(EventType.PRE));
+    }
+
+    @Inject(method = "onUpdate", at = @At("RETURN"))
+    private void onUpdatePost(CallbackInfo ci) {
+        EventManager.call(new UpdateEvent(EventType.POST));
     }
 }

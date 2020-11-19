@@ -14,7 +14,7 @@ import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.EventTarget;
 import uwu.smsgamer.pasteclient.PasteClient;
 import uwu.smsgamer.pasteclient.events.KeyEvent;
-import uwu.smsgamer.pasteclient.modules.modules.combat.AimBot;
+import uwu.smsgamer.pasteclient.modules.modules.combat.*;
 import uwu.smsgamer.pasteclient.modules.modules.fun.DemoModeModule;
 import uwu.smsgamer.pasteclient.modules.modules.misc.*;
 import uwu.smsgamer.pasteclient.modules.modules.movement.*;
@@ -43,6 +43,7 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
     public void addModules() {
         //Combat
         addModule(new AimBot());
+        addModule(new KillAura());
 
         //Fun
         addModule(new DemoModeModule());

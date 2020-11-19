@@ -58,6 +58,7 @@ public class Fly extends Module {
 
     @EventTarget
     private void onPacket(PacketEvent event) {
+        if (!this.getState()) return;
         if (event.getEventType().equals(EventType.SEND)) {
             if (event.getPacket() instanceof CPacketPlayer) {
                 CPacketPlayer packet = (CPacketPlayer) event.getPacket();
