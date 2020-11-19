@@ -67,7 +67,7 @@ public class MultiString extends Value<Void> {
 
     @Override
     public JsonElement toElement() {
-        return null;
+        return JsonNull.INSTANCE;
     }
 
     @Override
