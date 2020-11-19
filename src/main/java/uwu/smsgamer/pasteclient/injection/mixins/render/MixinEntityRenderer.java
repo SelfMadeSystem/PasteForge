@@ -20,10 +20,6 @@ import java.util.List;
 @Mixin(EntityRenderer.class)
 public class MixinEntityRenderer {
     @Shadow
-    @Mutable
-    private Entity pointedEntity;
-
-    @Shadow
     @Final
     private Minecraft mc;
 

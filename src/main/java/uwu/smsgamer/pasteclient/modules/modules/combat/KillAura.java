@@ -151,8 +151,20 @@ public class KillAura extends Module {
     public void attack() {
         if (lastAttack++ >= nextAttack) {
             mc.player.swingArm(EnumHand.MAIN_HAND);
-            RayTraceResult result = RaycastUtils.getRayTraceResult(1, new EntityImpl(mc.world, mc.player, yaw, pitch, prevYaw, prevPitch), reach.getValue(), 6);
-            if (result.typeOfHit.equals(RayTraceResult.Type.ENTITY)) {
+            float rY = mc.player.rotationYaw;
+            float rP = mc.player.rotationPitch;
+            float pRY = mc.player.prevRotationYaw;
+            float pRP = mc.player.prevRotationPitch;
+            mc.player.rotationYaw = yaw;
+            mc.player.rotationPitch = pitch;
+            mc.player.prevRotationYaw = prevYaw;
+            mc.player.prevRotationPitch = prevPitch;
+            RayTraceResult result = RaycastUtils.getRayTraceResult(1, mc.player, reach.getValue(), 6);
+            mc.player.rotationYaw = rY;
+            mc.player.rotationPitch = rP;
+            mc.player.prevRotationYaw = pRY;
+            mc.player.prevRotationPitch = pRP;
+            if (result.entityHit != null) {
                 mc.playerController.attackEntity(mc.player, result.entityHit);
             } else if (result.typeOfHit.equals(RayTraceResult.Type.BLOCK)) {
                 mc.playerController.clickBlock(result.getBlockPos(), result.sideHit);
