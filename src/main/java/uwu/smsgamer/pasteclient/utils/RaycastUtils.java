@@ -69,8 +69,6 @@ public class RaycastUtils {
                     }
                 }
             }
-            if (viewEntity != mc.player)
-                ChatUtils.info(pointedEntity == null ? "null" : pointedEntity.getClass().getSimpleName());
 
             if (pointedEntity != null && flag && vec3d.distanceTo(vec3d3) > eReach) {
                 pointedEntity = null;
