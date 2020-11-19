@@ -61,20 +61,34 @@ public abstract class BlockGUI {
         return res.getScaledHeight();
     }
 
+    protected int cachedWidth;
     protected int cachedHeight;
-    protected boolean heightCached;
+    protected boolean sizeCached;
 
     public int getHeight() {
-        if (heightCached) return cachedHeight;
+        if (sizeCached) return cachedHeight;
+        cachedWidth = WIDTH;
+        int screenHeight = getMidScreenY();
+        int height0 = spacing;
         int height = spacing;
         for (BlockComponent component : components) {
             height += component.getHeight() + spacing;
+            if (height > screenHeight) {
+                cachedWidth += WIDTH;
+                height0 = Math.max(height0, height);
+                height = spacing;
+            }
         }
-        return cachedHeight = height;
+        return cachedHeight = Math.max(height0, height);
+    }
+
+    public int getWidth() {
+        if (!sizeCached) getHeight();
+        return cachedWidth;
     }
 
     public void render(int mouseX, int mouseY, int timeDiff) {
-        heightCached = false;
+        sizeCached = false;
         if (despawned) {
             if (despawnTime > 0) despawnTime -= timeDiff;
             if (despawnTime - timeDiff < 0) {
@@ -89,15 +103,22 @@ public abstract class BlockGUI {
         }
         int xOffset = (int) (childOffset * getChildCount());
         BlockClickGUI.renderer.drawRect(0, 0, getMidScreenX() * 2, getMidScreenY() * 2, BlockClickGUI.GUI_BACKGROUND);
-        BlockClickGUI.renderer.drawRect(getMidScreenX() - WIDTH / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
-          WIDTH + spacing * 2, getHeight(), BlockClickGUI.GUI_COLOR);
-        BlockClickGUI.renderer.drawOutline(getMidScreenX() - WIDTH / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
-          WIDTH + spacing * 2, getHeight(), 2, BlockClickGUI.GUI_BORDER);
-        int currentY = getMidScreenY() - getHeight() / 2;
+        BlockClickGUI.renderer.drawRect(getMidScreenX() - getWidth() / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
+          getWidth() + spacing * 2, getHeight(), BlockClickGUI.GUI_COLOR);
+        BlockClickGUI.renderer.drawOutline(getMidScreenX() - getWidth() / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
+          getWidth() + spacing * 2, getHeight(), 2, BlockClickGUI.GUI_BORDER);
+        final int startY = getMidScreenY() - getHeight() / 2;
+        final int stopY = getMidScreenY() + getHeight() / 2;
+        int currentX = -getWidth()/2 + WIDTH/2;
+        int currentY = startY;
         List<BlockComponent> cmpts = new ArrayList<>(components);
         for (BlockComponent component : cmpts) {
             currentY += component.getHeight() + spacing;
-            component.render(getMidScreenX() - xOffset, currentY, mouseX, mouseY);
+            if (currentY > stopY) {
+                currentY = startY + component.getHeight() + spacing;
+                currentX += WIDTH;
+            }
+            component.render(getMidScreenX() - xOffset + currentX, currentY, mouseX, mouseY);
         }
         if (despawned) {
             BlockClickGUI.renderer.setOpacity(1);
