@@ -1,5 +1,7 @@
 package uwu.smsgamer.pasteclient.modules.modules.misc;
 
+import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.ChatUtils;
 import uwu.smsgamer.pasteclient.values.*;
@@ -25,6 +27,10 @@ public class ValuesTest extends Module {
     public StringValue stringValue = addStr("StrVal", "String", "Hello");
     public NumberValue hiddenValue;
     public MultiString multiString = (MultiString) addValue(new MultiString("MultiStr", "Multiple Strings UwU"));
+    public PacketValue packetValue = (PacketValue) addValue(new PacketValue("Packet", "Packet Value (:", CPacketPlayer.class));
+    public PacketValue cPacketValue = (PacketValue) addValue(new PacketValue("CPacket", "Client Packet Value (:", CPacketPlayer.class, PacketValue.cPacketChoices));
+    public PacketValue sPacketValue = (PacketValue) addValue(new PacketValue("SPacket", "Server Packet Value (:", SPacketPlayerPosLook.class, PacketValue.sPacketChoices));
+    public PositionValue positionValue = (PositionValue) addValue(new PositionValue("Position", "Position Value (:"));
 
     public ValuesTest() {
         super("ValuesTest", "Just testing values", ModuleCategory.MISC);

@@ -6,9 +6,9 @@ import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
 import uwu.smsgamer.pasteclient.utils.StringHashMap;
 
-public class PacketValue extends ChoiceValue<Class<Packet<?>>> {
-    public static final StringHashMap<Class<Packet<?>>> packetChoices = new StringHashMap<>();
-    public static final StringHashMap<Class<Packet<?>>> cPacketChoices = StringHashMap.reverse(
+public class PacketValue extends ChoiceValue<Class<? extends Packet<?>>> {
+    public static final StringHashMap<Class<? extends Packet<?>>> packetChoices = new StringHashMap<>();
+    public static final StringHashMap<Class<? extends Packet<?>>> cPacketChoices = StringHashMap.reverse(
       "CPacketAnimation", CPacketAnimation.class,
       "CPacketChatMessage", CPacketChatMessage.class,
       "CPacketClickWindow", CPacketClickWindow.class,
@@ -38,7 +38,7 @@ public class PacketValue extends ChoiceValue<Class<Packet<?>>> {
       "CPacketUseEntity", CPacketUseEntity.class,
       "CPacketVehicleMove", CPacketVehicleMove.class
     );
-    public static final StringHashMap<Class<Packet<?>>> sPacketChoices = StringHashMap.reverse(
+    public static final StringHashMap<Class<? extends Packet<?>>> sPacketChoices = StringHashMap.reverse(
       "SPacketAdvancementInfo", SPacketAdvancementInfo.class,
       "SPacketAnimation", SPacketAnimation.class,
       "SPacketBlockAction", SPacketBlockAction.class,
@@ -123,11 +123,11 @@ public class PacketValue extends ChoiceValue<Class<Packet<?>>> {
         packetChoices.putAll(sPacketChoices);
     }
 
-    public PacketValue(String name, String description, Class<Packet<?>> val, Value<?>... children) {
+    public PacketValue(String name, String description, Class<? extends Packet<?>> val, Value<?>... children) {
         this(name, description, val, packetChoices, children);
     }
 
-    public PacketValue(String name, String description, Class<Packet<?>> val, StringHashMap<Class<Packet<?>>> choices, Value<?>... children) {
+    public PacketValue(String name, String description, Class<? extends Packet<?>> val, StringHashMap<Class<? extends Packet<?>>> choices, Value<?>... children) {
         super(name, description, val, choices, children);
     }
 
