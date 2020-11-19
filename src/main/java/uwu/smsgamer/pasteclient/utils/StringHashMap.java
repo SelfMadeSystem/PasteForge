@@ -19,4 +19,20 @@ public class StringHashMap<T> extends HashMap<T, String> {
             }
         }
     }
+
+    public static <T>StringHashMap<T> reverse(Object... objects) {
+        StringHashMap<T> hashMap = new StringHashMap<>();
+        String s = null;
+        boolean sw = true;
+        for (Object object : objects) {
+            if (!sw) {
+                hashMap.put((T) object, s);
+                sw = true;
+            } else {
+                s = (String) object;
+                sw = false;
+            }
+        }
+        return hashMap;
+    }
 }
