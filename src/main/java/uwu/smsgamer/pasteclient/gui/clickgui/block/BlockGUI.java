@@ -68,12 +68,12 @@ public abstract class BlockGUI {
     public int getHeight() {
         if (sizeCached) return cachedHeight;
         cachedWidth = WIDTH;
-        int screenHeight = getMidScreenY();
+        int stop = getMidScreenY() * 2 - BlockComponent.HEIGHT * 4;
         int height0 = spacing;
         int height = spacing;
         for (BlockComponent component : components) {
             height += component.getHeight() + spacing;
-            if (height > screenHeight) {
+            if (height > stop) {
                 cachedWidth += WIDTH;
                 height0 = Math.max(height0, height);
                 height = spacing;
