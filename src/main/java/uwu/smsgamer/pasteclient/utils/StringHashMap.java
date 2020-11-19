@@ -20,6 +20,14 @@ public class StringHashMap<T> extends HashMap<T, String> {
         }
     }
 
+    public HashMap<String, T> getReversedMap() {
+        HashMap<String, T> map = new HashMap<>();
+        for (Entry<T, String> e : entrySet()) {
+            map.put(e.getValue(), e.getKey());
+        }
+        return map;
+    }
+
     public static <T>StringHashMap<T> reverse(Object... objects) {
         StringHashMap<T> hashMap = new StringHashMap<>();
         String s = null;

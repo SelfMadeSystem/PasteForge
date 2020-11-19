@@ -1,6 +1,6 @@
 package uwu.smsgamer.pasteclient.values;
 
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
@@ -133,11 +133,11 @@ public class PacketValue extends ChoiceValue<Class<Packet<?>>> {
 
     @Override
     public JsonElement toElement() {
-        return null;
+        return new JsonPrimitive(choices.get(value));
     }
 
     @Override
     public void fromElement(JsonElement ele) {
-
+        value = choices.getReversedMap().get(ele.getAsString());
     }
 }
