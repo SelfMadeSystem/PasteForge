@@ -16,7 +16,7 @@ import uwu.smsgamer.pasteclient.PasteClient;
 import uwu.smsgamer.pasteclient.events.KeyEvent;
 import uwu.smsgamer.pasteclient.modules.modules.combat.AimBot;
 import uwu.smsgamer.pasteclient.modules.modules.fun.DemoModeModule;
-import uwu.smsgamer.pasteclient.modules.modules.misc.ValuesTest;
+import uwu.smsgamer.pasteclient.modules.modules.misc.*;
 import uwu.smsgamer.pasteclient.modules.modules.movement.*;
 import uwu.smsgamer.pasteclient.modules.modules.render.ClickGUIModule;
 import uwu.smsgamer.pasteclient.modules.modules.render.HUD;
@@ -49,6 +49,7 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
 
         //Misc
         addModule(new ValuesTest());
+        addModule(new Disabler());
 
         //Movement
         addModule(new Fly());

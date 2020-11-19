@@ -63,6 +63,10 @@ public abstract class Value<T> {
         return children.get(arg.toLowerCase());
     }
 
+    public boolean hasChild(@NotNull String arg) {
+        return children.containsKey(arg.toLowerCase());
+    }
+
     public T getValue() {
         return value;
     }
