@@ -17,12 +17,12 @@ public abstract class Value<T> {
     protected Value<?> parent;
     protected HashMap<String, Value<?>> children = new HashMap<>();
 
-    protected Value(String name, String description, T dVal) {
+    public Value(String name, String description, T dVal) {
         this.name = name;
         this.description = description;
         this.dVal = dVal;
         this.value = dVal;
-        // Allow adding of children through FileManager is done per value by overriding the to/fromJson() method.
+        // Adding of children through configs is done per value by overriding the to/fromJson() method.
     }
 
     public Value(String name, String description, T dVal, Value<?>... children) {

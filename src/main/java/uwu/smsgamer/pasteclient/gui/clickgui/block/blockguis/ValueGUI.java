@@ -37,6 +37,8 @@ public class ValueGUI extends BlockGUI {
                     components.add(new ChoiceBlock(this, (ChoiceValue<?>) value));
                 } else if (value instanceof StringValue) {
                     components.add(new StringBlock(this, (StringValue) value));
+                } else if (value instanceof ColorValue) {
+                    components.add(new ColorBlock(this, (ColorValue) value));
                 } else {
                     components.add(new MiscBlock(this, value));
                 }

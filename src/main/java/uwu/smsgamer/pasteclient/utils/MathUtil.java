@@ -87,4 +87,8 @@ public class MathUtil {
     public static double cos(double deg) {
         return MathHelper.cos((float) Math.toRadians(deg));
     }
+
+    public static boolean approxEquals(double a, double b, double e) {
+        return Math.abs(a - b) <= e;
+    }
 }
