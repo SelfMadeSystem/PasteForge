@@ -7,13 +7,21 @@ import net.minecraft.util.math.*;
 
 public class RotationUtil {
     private final Entity target;
+    private final float yaw;
+    private final float pitch;
 
     private static Entity p() {
         return Minecraft.getMinecraft().player;
     }
 
     public RotationUtil(Entity target) {
+        this(target, p().rotationYaw, p().rotationPitch);
+    }
+
+    public RotationUtil(Entity target, float yaw, float pitch) {
         this.target = target;
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
     public Rotation getClosestRotation() {
@@ -36,8 +44,8 @@ public class RotationUtil {
         AtomicDouble maxPitch = null;
         AtomicDouble setYaw = null;
         AtomicDouble setPitch = null;
-        double pYaw = wrapDegrees(p().rotationYaw);
-        double pPitch = p().rotationPitch;
+        double pYaw = wrapDegrees(yaw);
+        double pPitch = pitch;
         for (double x = -hLimit; x <= hLimit; x += hLimit > 0 ? hLimit / 8 : 1) { //prevents infinite loop
             for (double z = -hLimit; z <= hLimit; z += hLimit > 0 ? hLimit / 8 : 1) {
                 for (double y = setY ? sY : 0; y <= (setY ? sY : 1); y += 0.1) {

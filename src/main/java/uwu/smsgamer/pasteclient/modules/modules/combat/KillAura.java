@@ -23,7 +23,7 @@ public class KillAura extends Module {
       2, "Least Angle");
     public IntChoiceValue aimMode = addIntChoice("AimMode", "How to aim at entities.", 0,
       0, "Normal",
-      0, "GCD Patch");
+      1, "GCD Patch");
     public IntChoiceValue aimWhere = addIntChoice("AimWhere", "Where to aim on the entity.", 0,
       0, "Auto",
       1, "Top",
@@ -60,13 +60,16 @@ public class KillAura extends Module {
     public float pitch;
     public float prevYaw;
     public float prevPitch;
+    public Entity lastTarget;
 
     @Override
     protected void onEnable() {
-        prevYaw = mc.player.prevRotationYaw;
-        prevPitch = mc.player.prevRotationPitch;
-        yaw = mc.player.rotationYaw;
-        pitch = mc.player.rotationPitch;
+        if (mc.player != null) {
+            prevYaw = mc.player.prevRotationYaw;
+            prevPitch = mc.player.prevRotationPitch;
+            yaw = mc.player.rotationYaw;
+            pitch = mc.player.rotationPitch;
+        }
     }
 
     @EventTarget
@@ -87,9 +90,10 @@ public class KillAura extends Module {
                 target = TargetUtil.getLowestAngleEntity(range, angle);
                 break;
         }
+        lastTarget = target;
         if (target != null) {
             if (render.getValue()) render(target);
-            RotationUtil util = new RotationUtil(target);
+            RotationUtil util = new RotationUtil(target, yaw, pitch);
             boolean setY = aimWhere.getValue() != 0;
             double sY = getYPos();
 
@@ -107,7 +111,7 @@ public class KillAura extends Module {
                 case 0:
                     prevYaw = yaw;
                     prevPitch = pitch;
-                    yaw = rotation.yaw.floatValue();
+                    yaw += RotationUtil.angleDiff(rotation.yaw.floatValue(), yaw);
                     pitch = rotation.pitch.floatValue();
                     if (!silent.getValue()) rotation.toPlayer();
                     break;
@@ -133,7 +137,7 @@ public class KillAura extends Module {
             event.setPacket(new CPacketPlayer.PositionRotation(((CPacketPlayer.PositionRotation) packet).getX(mc.player.posX),
               ((CPacketPlayer.PositionRotation) packet).getY(mc.player.posY),
               ((CPacketPlayer.PositionRotation) packet).getZ(mc.player.posZ),
-              pitch, yaw, ((CPacketPlayer.PositionRotation) packet).isOnGround()));
+              yaw, pitch, ((CPacketPlayer.PositionRotation) packet).isOnGround()));
         }
     }
 
@@ -149,8 +153,7 @@ public class KillAura extends Module {
     private int nextAttack;
 
     public void attack() {
-        if (lastAttack++ >= nextAttack) {
-            mc.player.swingArm(EnumHand.MAIN_HAND);
+        if (lastAttack++ >= nextAttack && lastTarget != null) {
             float rY = mc.player.rotationYaw;
             float rP = mc.player.rotationPitch;
             float pRY = mc.player.prevRotationYaw;
@@ -173,6 +176,7 @@ public class KillAura extends Module {
             double max = maxCPS.getValue();
             nextAttack = (int) (Math.random() * (max-min) + min);
             lastAttack = 0;
+            mc.player.swingArm(EnumHand.MAIN_HAND);
         }
     }
 
