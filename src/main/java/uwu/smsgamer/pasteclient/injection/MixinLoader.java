@@ -11,6 +11,7 @@
 package uwu.smsgamer.pasteclient.injection;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.launch.MixinBootstrap;
@@ -19,8 +20,10 @@ import org.spongepowered.asm.mixin.Mixins;
 
 import java.util.Map;
 
+
 public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
+        LogManager.getLogger().info("=======Starting PasteClient mixin loading from MixinLoader.=======");
         MixinBootstrap.init();
         Mixins.addConfiguration("pasteclient.mixins.json");
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);

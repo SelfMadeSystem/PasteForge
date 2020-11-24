@@ -112,6 +112,7 @@ jar {
             "MixinConfigs": 'pasteclient.mixins.json',
             "tweakClass": 'org.spongepowered.asm.launch.MixinTweaker',
             "TweakOrder": 0,
+            "FMLCorePlugin": 'uwu.smsgamer.pasteclient.injection.MixinLoader',
             "FMLCorePluginContainsFMLMod": 'uwu.smsgamer.pasteclient.injection.MixinLoader'
     )
 }
