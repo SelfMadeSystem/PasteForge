@@ -12,14 +12,12 @@ package uwu.smsgamer.pasteclient.modules;
 
 import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.EventTarget;
-import uwu.smsgamer.pasteclient.PasteClient;
 import uwu.smsgamer.pasteclient.events.KeyEvent;
 import uwu.smsgamer.pasteclient.modules.modules.combat.*;
 import uwu.smsgamer.pasteclient.modules.modules.fun.DemoModeModule;
 import uwu.smsgamer.pasteclient.modules.modules.misc.*;
 import uwu.smsgamer.pasteclient.modules.modules.movement.*;
-import uwu.smsgamer.pasteclient.modules.modules.render.ClickGUIModule;
-import uwu.smsgamer.pasteclient.modules.modules.render.HUD;
+import uwu.smsgamer.pasteclient.modules.modules.render.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -59,6 +57,7 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
 
         //Render
         addModule(new ClickGUIModule());
+        addModule(new ESP());
         addModule(new HUD());
     }
 
