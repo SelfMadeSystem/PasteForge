@@ -15,7 +15,7 @@ public abstract class Value<T> {
     protected T value;
     protected final T dVal;
     protected Value<?> parent;
-    protected HashMap<String, Value<?>> children = new HashMap<>();
+    protected LinkedHashMap<String, Value<?>> children = new LinkedHashMap<>();
 
     public Value(String name, String description, T dVal) {
         this.name = name;

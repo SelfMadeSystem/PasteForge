@@ -6,6 +6,8 @@ import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.ChatUtils;
 import uwu.smsgamer.pasteclient.values.*;
 
+import java.awt.*;
+
 public class ValuesTest extends Module {
     public BoolValue boolVal = addBool("BoolVal", "Boolean Value", true);
     public BoolValue boolVal1 = addBool("BoolVal1", "Boolean Value", false);
@@ -31,6 +33,7 @@ public class ValuesTest extends Module {
     public PacketValue cPacketValue = (PacketValue) addValue(new PacketValue("CPacket", "Client Packet Value (:", CPacketPlayer.class, PacketValue.cPacketChoices));
     public PacketValue sPacketValue = (PacketValue) addValue(new PacketValue("SPacket", "Server Packet Value (:", SPacketPlayerPosLook.class, PacketValue.sPacketChoices));
     public PositionValue positionValue = (PositionValue) addValue(new PositionValue("Position", "Position Value (:"));
+    public ColorValue colorValue = (ColorValue) addValue(new ColorValue("Color", "Color Value", Color.RED));
 
     public ValuesTest() {
         super("ValuesTest", "Just testing values", ModuleCategory.MISC);

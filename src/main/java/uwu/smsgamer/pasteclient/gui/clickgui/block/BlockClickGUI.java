@@ -115,23 +115,14 @@ public class BlockClickGUI extends GuiScreen { // TODO: Keybind
         blockGUI.click(mouseX, mouseY, mouseButton, 2);
     }
 
-    /*
-    if (keyCode == 1) {
-            close();
-        } else blockGUI.keyPress(typedChar, keyCode);
-     */
-
     @Override
     public void handleKeyboardInput() {
         char typedChar = Keyboard.getEventCharacter();
         int keyCode = Keyboard.getEventKey();
-        if (keyCode == 1) {
+        if (keyCode == 1 && Keyboard.getEventKeyState() && !Keyboard.isRepeatEvent()) {
             close();
         } else blockGUI.keyPress(typedChar, keyCode, Keyboard.getEventKeyState() ?
           (Keyboard.isRepeatEvent() ? 1 : 0) : 2);
-//        if (Keyboard.getEventKey() == 0 && keyChar >= ' ' || Keyboard.getEventKeyState()) {
-//            this.keyTyped(keyChar, Keyboard.getEventKey());
-//        }
 
         this.mc.dispatchKeypresses();
     }

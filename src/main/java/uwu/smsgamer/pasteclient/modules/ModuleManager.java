@@ -37,7 +37,7 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
         EventManager.register(this);
     }
 
-
+    // Keep in alphanumerical order
     public void addModules() {
         //Combat
         addModule(new AimBot());
@@ -47,13 +47,13 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
         addModule(new DemoModeModule());
 
         //Misc
-        addModule(new ValuesTest());
         addModule(new Disabler());
+        addModule(new ValuesTest());
 
         //Movement
         addModule(new Fly());
-        addModule(new Speed());
         addModule(new SetbackDetector());
+        addModule(new Speed());
 
         //Render
         addModule(new ClickGUIModule());

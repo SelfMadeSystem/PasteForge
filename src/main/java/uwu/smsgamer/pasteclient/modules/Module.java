@@ -28,7 +28,7 @@ public abstract class Module { //TODO: ALSO NEED TO BE REDONE
     protected int keybind;
     protected boolean state;
 
-    protected HashMap<String, Value<?>> values = new HashMap<>();
+    protected LinkedHashMap<String, Value<?>> values = new LinkedHashMap<>();
 
     protected Module(String name, String description, ModuleCategory moduleCategory) {
         this(name, description, moduleCategory, true, false, Keyboard.KEY_NONE);
