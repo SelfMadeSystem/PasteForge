@@ -32,8 +32,12 @@ public class Colour {
         }
 
         public Color toColor() {
+            return toColor(1);
+        }
+
+        public Color toColor(double alpha) {
             try {
-                return new Color((int) (r * 255), (int) (g * 255), (int) (b * 255));
+                return new Color((int) (r * 255), (int) (g * 255), (int) (b * 255), (int) (alpha * 255));
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException(e.getMessage() + "; " + r + " " + g + " " + b);
             }
@@ -46,6 +50,15 @@ public class Colour {
 
         @Override
         public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            RGB rgb = (RGB) o;
+            return Double.compare(rgb.r, r) == 0 &&
+              Double.compare(rgb.g, g) == 0 &&
+              Double.compare(rgb.b, b) == 0;
+        }
+
+        public boolean approxEquals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             RGB rgb = (RGB) o;
@@ -85,6 +98,15 @@ public class Colour {
 
         @Override
         public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            HSV hsv = (HSV) o;
+            return Double.compare(hsv.h, h) == 0 &&
+              Double.compare(hsv.s, s) == 0 &&
+              Double.compare(hsv.v, v) == 0;
+        }
+
+        public boolean approxEquals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             HSV hsv = (HSV) o;

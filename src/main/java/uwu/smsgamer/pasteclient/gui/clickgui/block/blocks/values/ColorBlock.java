@@ -19,7 +19,9 @@ public class ColorBlock extends ValueBlock {
     public void draw(int x, int y, int mouseX, int mouseY) {
         BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
           getWidth(), getHeight(), value.getValue());
-        BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2, value.getName(), Color.BLACK);
+        BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2, value.getName(),
+          (0.2126 * value.getValue().getRed() + 0.7152 * value.getValue().getGreen() +
+            0.0722 * value.getValue().getBlue() < 0.5) ? Color.WHITE : Color.BLACK);
         setDescription(mouseX, mouseY);
     }
 
