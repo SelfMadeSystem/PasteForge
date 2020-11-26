@@ -50,13 +50,13 @@ public class ColorSelectorGUI extends GuiScreen {
     public void setRGB(Colour.RGB rgb) {
         this.rgb = rgb;
         this.hsv = Colour.rgb2hsv(rgb);
-        this.value.setValue(rgb.toColor());
+        this.value.setValue(rgb.toColor(alpha));
     }
 
     public void setHSV(Colour.HSV hsv) {
         this.hsv = hsv;
         this.rgb = Colour.hsv2rgb(hsv);
-        this.value.setValue(rgb.toColor());
+        this.value.setValue(rgb.toColor(alpha));
     }
 
     public void setAlpha(double alpha) {
