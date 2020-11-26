@@ -5,7 +5,7 @@ import uwu.smsgamer.pasteclient.utils.*;
 
 import java.awt.*;
 
-public class FancyColorValue extends ColorValue {
+public class FancyColorValue extends ColorValue implements Cloneable {
     private final IntChoiceValue mode;
     private final ColorValue main;
     private final ColorValue second;
@@ -157,5 +157,21 @@ public class FancyColorValue extends ColorValue {
         main.fromElement(object.get("main"));
         second.fromElement(object.get("second"));
         speed.fromElement(object.get("speed"));
+    }
+
+    @Override
+    public FancyColorValue clone() {
+        try {
+            return (FancyColorValue) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
+        }
+    }
+
+    public FancyColorValue clone(String name, String description) {
+        FancyColorValue value = this.clone();
+        value.name = name;
+        value.description = description;
+        return value;
     }
 }

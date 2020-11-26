@@ -10,8 +10,8 @@ import java.util.*;
 // Ch
 public abstract class Value<T> {
     public Module module;
-    protected final String name;
-    protected final String description;
+    protected String name;
+    protected String description;
     protected T value;
     protected final T dVal;
     protected Value<?> parent;

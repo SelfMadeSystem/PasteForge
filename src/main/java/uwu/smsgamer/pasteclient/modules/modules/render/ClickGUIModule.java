@@ -18,16 +18,12 @@ import uwu.smsgamer.pasteclient.values.IntChoiceValue;
 public class ClickGUIModule extends Module {
     public static final ClickGUI clickGui = new ClickGUI();
 
-    private final IntChoiceValue value = addIntChoice("Mode", "Mode for clickgui", 0,
-      0, "Block");
-
     public ClickGUIModule() {
         super("ClickGUI", "The click gui", ModuleCategory.RENDER, true, false, Keyboard.KEY_RSHIFT);
     }
 
     @Override
     protected void onEnable() {
-        clickGui.selected = value.getValue();
         mc.displayGuiScreen(clickGui.getSelectedGUI());
         setState(false);
     }
@@ -35,9 +31,7 @@ public class ClickGUIModule extends Module {
     @Override
     public void setState(boolean state) {
         this.state = state;
-        if (state)
-            onEnable();
-        else
-            onDisable();
+        if (state) onEnable();
+        else onDisable();
     }
 }

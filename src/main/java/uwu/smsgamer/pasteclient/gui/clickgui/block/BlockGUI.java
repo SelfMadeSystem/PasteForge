@@ -102,14 +102,14 @@ public abstract class BlockGUI {
             BlockClickGUI.renderer.setOpacity((double) spawnTime / animationTime);
         }
         int xOffset = (int) (childOffset * getChildCount());
-        BlockClickGUI.renderer.drawRect(0, 0, getMidScreenX() * 2, getMidScreenY() * 2, BlockClickGUI.GUI_BACKGROUND);
+        BlockClickGUI.renderer.drawRect(0, 0, getMidScreenX() * 2, getMidScreenY() * 2, BlockClickGUI.GUI_BACKGROUND.getColor());
         BlockClickGUI.renderer.drawRect(getMidScreenX() - getWidth() / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
           getWidth() + spacing * 2, getHeight(), BlockClickGUI.GUI_COLOR);
         BlockClickGUI.renderer.drawOutline(getMidScreenX() - getWidth() / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
           getWidth() + spacing * 2, getHeight(), 2, BlockClickGUI.GUI_BORDER);
         final int startY = getMidScreenY() - getHeight() / 2;
         final int stopY = getMidScreenY() + getHeight() / 2;
-        int currentX = -getWidth()/2 + WIDTH/2;
+        int currentX = -getWidth() / 2 + WIDTH / 2;
         int currentY = startY;
         List<BlockComponent> cmpts = new ArrayList<>(components);
         for (BlockComponent component : cmpts) {

@@ -5,50 +5,51 @@ import org.lwjgl.input.Keyboard;
 import uwu.smsgamer.pasteclient.gui.clickgui.block.blockguis.CategoryGUI;
 import uwu.smsgamer.pasteclient.gui.clickgui.utils.*;
 import uwu.smsgamer.pasteclient.utils.fontRenderer.GlyphPageFontRenderer;
+import uwu.smsgamer.pasteclient.values.FancyColorValue;
 
 import java.awt.*;
 import java.io.IOException;
 
 public class BlockClickGUI extends GuiScreen { // TODO: Keybind
-    public static Color GUI_BACKGROUND = new Color(0F, 0F, 0F, 0.5F);
-    public static Color GUI_COLOR = Color.WHITE;
-    public static Color GUI_BORDER = Color.RED;
+    public static FancyColorValue GUI_BACKGROUND = new FancyColorValue("GUIBG", "Background for the GUI.", new Color(0F, 0F, 0F, 0.5F));
+    public static FancyColorValue GUI_COLOR = new FancyColorValue("GUIColor", "Color for the GUI.", Color.WHITE);
+    public static FancyColorValue GUI_BORDER = new FancyColorValue("GUIBorder", "Border for the GUI.", Color.RED);
 
-    public static Color CATEGORY = new Color(200, 200, 200);
-    public static Color CATEGORY_HOVER = new Color(170, 170, 170);
+    public static FancyColorValue CATEGORY = new FancyColorValue("Category", "Color for category.", new Color(200, 200, 200));
+    public static FancyColorValue CATEGORY_HOVER = new FancyColorValue("CategoryHover", "Color when hovering of category.", new Color(170, 170, 170));
 
-    public static Color MODULE_ON = new Color(160, 200, 160);
-    public static Color MODULE_ON_HOVER = new Color(120, 170, 120);
-    public static Color MODULE_OFF = CATEGORY;
-    public static Color MODULE_OFF_HOVER = CATEGORY_HOVER;
+    public static FancyColorValue MODULE_ON = new FancyColorValue("ModuleOn", "Color when module is on.", new Color(160, 200, 160));
+    public static FancyColorValue MODULE_ON_HOVER = new FancyColorValue("ModuleOnHover", "Color when module is on and hovering.", new Color(120, 170, 120));
+    public static FancyColorValue MODULE_OFF = CATEGORY.clone("ModuleOff", "Color when module is off.");
+    public static FancyColorValue MODULE_OFF_HOVER = CATEGORY_HOVER.clone("ModuleOffHover", "Color when module is off and hovering.");
 
-    public static Color DEFAULT = new Color(180, 180, 180);
-    public static Color DEFAULT_HOVER = new Color(100, 100, 100);
+    public static FancyColorValue DEFAULT = new FancyColorValue("Default", "Color for default values.", new Color(180, 180, 180));
+    public static FancyColorValue DEFAULT_HOVER = new FancyColorValue("DefaultHover", "Color for default values when hovering.", new Color(100, 100, 100));
 
-    public static Color BACK = new Color(230, 20, 20);
-    public static Color BACK_HOVER = new Color(180, 0, 0);
+    public static FancyColorValue BACK = new FancyColorValue("Back", "Color for back button.", new Color(230, 20, 20));
+    public static FancyColorValue BACK_HOVER = new FancyColorValue("BackHover", "Color for back button when hovering.", new Color(180, 0, 0));
 
-    public static Color CHOICE = CATEGORY;
-    public static Color CHOICE_HOVER = CATEGORY_HOVER;
+    public static FancyColorValue CHOICE = CATEGORY.clone("Choice", "Color for choice values.");
+    public static FancyColorValue CHOICE_HOVER = CATEGORY_HOVER.clone("ChoiceHover", "Color for choice values when hovering.");
 
-    public static Color CHOICE_UNSELECT = MODULE_OFF;
-    public static Color CHOICE_UNSELECT_HOVER = MODULE_OFF_HOVER;
-    public static Color CHOICE_SELECT = MODULE_ON;
-    public static Color CHOICE_SELECT_HOVER = MODULE_ON_HOVER;
+    public static FancyColorValue CHOICE_UNSELECT = MODULE_OFF.clone("ChoiceUnselect", "Color for unselected choice.");
+    public static FancyColorValue CHOICE_UNSELECT_HOVER = MODULE_OFF_HOVER.clone("ChoiceUnselectHover", "Color for unselected choice when hovering.");
+    public static FancyColorValue CHOICE_SELECT = MODULE_ON.clone("ChoiceSelect", "Color for selected choice.");
+    public static FancyColorValue CHOICE_SELECT_HOVER = MODULE_ON_HOVER.clone("ChoiceSelectHover", "Color for selected choice when hovering.");
 
-    public static Color NUM_BG = CATEGORY;
-    public static Color NUM_BG_HOVER = CATEGORY_HOVER;
-    public static Color NUM_BG_SELECT = new Color(120, 120, 120);
-    public static Color NUM_SLIDER = new Color(130, 200, 130);
-    public static Color NUM_SLIDER_HOVER = new Color(80, 150, 80);
-    public static Color NUM_SLIDER_SELECT = new Color(80, 120, 80);
+    public static FancyColorValue NUM_BG = CATEGORY.clone("NumBG", "BackGround for number slider.");
+    public static FancyColorValue NUM_BG_HOVER = CATEGORY_HOVER.clone("NumBGHover", "BackGround for number slider when hovering.");
+    public static FancyColorValue NUM_BG_SELECT = new FancyColorValue("NumBGSelect", "BackGround for number slider when selected.", new Color(120, 120, 120));
+    public static FancyColorValue NUM_SLIDER = new FancyColorValue("NumSlider", "Color for slider.", new Color(130, 200, 130));
+    public static FancyColorValue NUM_SLIDER_HOVER = new FancyColorValue("NumSliderHover", "Color for slider when hovering.", new Color(80, 150, 80));
+    public static FancyColorValue NUM_SLIDER_SELECT = new FancyColorValue("NumSliderSelect", "Color for slider when selected.", new Color(80, 120, 80));
 
-    public static Color STR = NUM_BG;
-    public static Color STR_HOVER = NUM_BG_HOVER;
-    public static Color STR_SELECT = NUM_BG_SELECT;
+    public static FancyColorValue STR = NUM_BG.clone("Str", "Color for string.");
+    public static FancyColorValue STR_HOVER = NUM_BG_HOVER.clone("StrHover", "Color for string when hovering.");
+    public static FancyColorValue STR_SELECT = NUM_BG_SELECT.clone("StrSelect", "Color for string when selected.");
 
-    public static Color ADD = new Color(80, 230, 80);
-    public static Color ADD_HOVER = new Color(60, 150, 60);
+    public static FancyColorValue ADD = new FancyColorValue("Add", "Color for add.", new Color(80, 230, 80));
+    public static FancyColorValue ADD_HOVER = new FancyColorValue("AddHover", "Color for add when hovering.", new Color(60, 150, 60));
 
     public static final IRenderer renderer;
 

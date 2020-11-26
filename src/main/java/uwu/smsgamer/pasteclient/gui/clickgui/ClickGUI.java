@@ -9,12 +9,6 @@ public class ClickGUI {
     public int selected = 0;
 
     public GuiScreen getSelectedGUI() {
-        switch (selected) {
-            case 0:
-                return blockClickGUI;
-            default:
-                NotificationManager.show(new Notification(NotificationType.ERROR, "GUI Error", "Selected: " + selected + " is not an option.", 1));
-                throw new IllegalStateException("Selected: " + selected + " is not an option.");
-        }
+        return blockClickGUI;
     }
 }
