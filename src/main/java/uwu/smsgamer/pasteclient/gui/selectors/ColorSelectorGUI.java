@@ -2,13 +2,12 @@ package uwu.smsgamer.pasteclient.gui.selectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import uwu.smsgamer.pasteclient.utils.Colour;
+import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.ColorValue;
 
 import java.awt.*;
 import java.io.IOException;
 
-//todo
 public class ColorSelectorGUI extends GuiScreen {
     public static int getSliderWidth() {
         return getScreenResX() / 30;
@@ -43,9 +42,9 @@ public class ColorSelectorGUI extends GuiScreen {
         this.prev = prev;
         this.value = value;
         Color color = value.getValue();
-        this.rgb = new Colour.RGB();
+        this.rgb = new Colour.RGB(color);
         this.hsv = Colour.rgb2hsv(color);
-        this.alpha = color.getAlpha();
+        this.alpha = color.getAlpha() / 255D;
     }
 
     public void setRGB(Colour.RGB rgb) {
@@ -71,7 +70,7 @@ public class ColorSelectorGUI extends GuiScreen {
         cursor = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b < 0.5) ? Color.WHITE : Color.BLACK;
         int centerX = getScreenResX() / 2;
         int centerY = getScreenResY() / 2;
-        drawRect(centerX - 50, centerY - 50, centerX + 50, centerY + 50, rgb.toColor().getRGB());
+        drawRect(centerX - 50, centerY - 50, centerX + 50, centerY + 50, rgb.toColor(alpha).getRGB());
         sliderR.render(mouseX, mouseY);
         sliderG.render(mouseX, mouseY);
         sliderB.render(mouseX, mouseY);
@@ -261,17 +260,42 @@ public class ColorSelectorGUI extends GuiScreen {
 
         @Override
         public void render(int mouseX, int mouseY) {
+            Color color = gui.rgb.toColor();
+            int r = color.getRed();
+            int g = color.getGreen();
+            int b = color.getBlue();
+            int xOffset = getSliderWidth() * 3;
+            int width = getScreenResX() - getSliderWidth() * 6;
+            int maxY = getScreenResY();
+            int minY = getScreenResY() - getSliderWidth();
+            for (int i = 0; i < width; i++)
+                drawRect(xOffset + i, minY, xOffset + i + 1, maxY,
+                  MathUtil.approxEquals(gui.alpha * width, i, 0.5) ? gui.cursor.getRGB() :
+                    new Color(r, g, b, (int) (((double) i / width) * 255)).getRGB());
+        }
 
+        @Override
+        public void click(int mouseX, int mouseY, int mouseButton, int mouseMode) {
+            if (mouseButton == 0 && mouseMode == 0 && selected(mouseX, mouseY))
+                selected = true;
+            if (mouseMode == 2) selected = false;
+            if (selected)
+                set(Math.min(1, Math.max(0, (double) (mouseX - getSliderWidth() * 3) / (getScreenResX() - getSliderWidth() * 6))));
         }
 
         @Override
         public boolean selected(int mouseX, int mouseY) {
-            return false;
+            ChatUtils.info((mouseX >= getSliderWidth() * 3 && mouseX <= getScreenResX() - getSliderWidth() * 3 &&
+              mouseY > getScreenResY() - getSliderWidth() && mouseY < getScreenResY()) + " " +
+              (mouseX >= getSliderWidth() * 3 && mouseX <= getScreenResX() - getSliderWidth() * 3) + " " +
+              (mouseY > getScreenResY() - getSliderWidth() && mouseY < getScreenResY()));
+            return mouseX >= getSliderWidth() * 3 && mouseX <= getScreenResX() - getSliderWidth() * 3 &&
+              mouseY > getScreenResY() - getSliderWidth() && mouseY < getScreenResY();
         }
 
         @Override
         public void set(double d) {
-
+            gui.setAlpha(d);
         }
     }
 }

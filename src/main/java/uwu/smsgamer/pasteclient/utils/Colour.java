@@ -35,11 +35,11 @@ public class Colour {
             return toColor(1);
         }
 
-        public Color toColor(double alpha) {
+        public Color toColor(double a) {
             try {
-                return new Color((int) (r * 255), (int) (g * 255), (int) (b * 255), (int) (alpha * 255));
+                return new Color((int) (r * 255), (int) (g * 255), (int) (b * 255), (int) (a * 255));
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(e.getMessage() + "; " + r + " " + g + " " + b);
+                throw new IllegalArgumentException(e.getMessage() + "; r:" + r + " g:" + g + " b:" + b + " a:" + a);
             }
         }
 

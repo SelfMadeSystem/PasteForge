@@ -17,7 +17,7 @@ public class ESP extends Module {
     @EventTarget
     private void onRender(Render3DEvent event) {
         if (!getState()) return;
-        for (Entity entity : mc.world.loadedEntityList) render(entity);
+        for (Entity entity : mc.world.loadedEntityList) if (!entity.equals(mc.player)) render(entity);
     }
 
     private void render(Entity entity) {
