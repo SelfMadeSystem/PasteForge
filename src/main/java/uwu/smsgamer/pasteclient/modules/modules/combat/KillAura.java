@@ -149,9 +149,7 @@ public class KillAura extends Module {
     @EventTarget
     private void onUpdate(UpdateEvent event) {
         if (!getState()) return;
-        if (event.getEventType().equals(EventType.POST)) {
-            attack();
-        }
+        if (event.getEventType().equals(EventType.PRE)) attack();
     }
 
     private int lastAttack;

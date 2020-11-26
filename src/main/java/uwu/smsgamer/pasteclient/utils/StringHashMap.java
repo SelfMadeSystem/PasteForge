@@ -2,7 +2,7 @@ package uwu.smsgamer.pasteclient.utils;
 
 import java.util.*;
 
-public class StringHashMap<T> extends HashMap<T, String> {
+public class StringHashMap<T> extends LinkedHashMap<T, String> {
     public StringHashMap() {
     }
 
@@ -22,7 +22,7 @@ public class StringHashMap<T> extends HashMap<T, String> {
 
     public HashMap<String, T> getReversedMap() {
         HashMap<String, T> map = new HashMap<>();
-        for (Entry<T, String> e : entrySet()) {
+        for (Map.Entry<T, String> e : entrySet()) {
             map.put(e.getValue(), e.getKey());
         }
         return map;
