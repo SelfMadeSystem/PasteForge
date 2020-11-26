@@ -285,10 +285,6 @@ public class ColorSelectorGUI extends GuiScreen {
 
         @Override
         public boolean selected(int mouseX, int mouseY) {
-            ChatUtils.info((mouseX >= getSliderWidth() * 3 && mouseX <= getScreenResX() - getSliderWidth() * 3 &&
-              mouseY > getScreenResY() - getSliderWidth() && mouseY < getScreenResY()) + " " +
-              (mouseX >= getSliderWidth() * 3 && mouseX <= getScreenResX() - getSliderWidth() * 3) + " " +
-              (mouseY > getScreenResY() - getSliderWidth() && mouseY < getScreenResY()));
             return mouseX >= getSliderWidth() * 3 && mouseX <= getScreenResX() - getSliderWidth() * 3 &&
               mouseY > getScreenResY() - getSliderWidth() && mouseY < getScreenResY();
         }
