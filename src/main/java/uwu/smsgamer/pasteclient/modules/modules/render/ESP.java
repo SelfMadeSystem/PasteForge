@@ -5,12 +5,12 @@ import net.minecraft.entity.Entity;
 import uwu.smsgamer.pasteclient.events.Render3DEvent;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.GLUtil;
-import uwu.smsgamer.pasteclient.values.ColorValue;
+import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
 
 public class ESP extends Module {
-    public ColorValue color = (ColorValue) addValue(new ColorValue("Color", "Color for ESP.", new Color(255, 0, 0, 64)));
+    public FancyColorValue color = (FancyColorValue) addValue(new FancyColorValue("Color", "Color for ESP.", new Color(255, 0, 0, 64)));
     public ESP() {
         super("ESP", "Outlines entities", ModuleCategory.RENDER);
         mc.renderGlobal.renderEntityOutlineFramebuffer();
@@ -23,6 +23,6 @@ public class ESP extends Module {
     }
 
     private void render(Entity entity) {
-        GLUtil.drawAxisAlignedBBRel(entity.getEntityBoundingBox(), color.getValue());
+        GLUtil.drawAxisAlignedBBRel(entity.getEntityBoundingBox(), color.getColor());
     }
 }

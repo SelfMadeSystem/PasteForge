@@ -45,7 +45,7 @@ public class KillAura extends Module {
     public NumberValue aimRandomPitch = (NumberValue) addValue(new NumberValue("AimRandomPitch", "Error loading description.", 2, 0, 15, 0.1, NumberValue.NumberType.DECIMAL));
     public BoolValue silent = addBool("Silent", "If the KillAura rotations are silent.", true);
     public BoolValue mark = addBool("Mark", "Whether to mark where you're aiming at.", true);
-    public ColorValue color = (ColorValue) addValue(new ColorValue("Mark Color", "Color for the marker.", new Color(0, 255, 0, 64)) {
+    public FancyColorValue color = (FancyColorValue) addValue(new FancyColorValue("Mark Color", "Color for the marker.", new Color(0, 255, 0, 64)) {
         @Override
         public boolean isVisible() {
             return mark.getValue();
@@ -216,6 +216,6 @@ public class KillAura extends Module {
         boolean setY = aimWhere.getValue() != 0;
         aabb = new AxisAlignedBB(entity.posX - lenX * hLimit.getValue(), entity.posY + lenY * (setY ? getYPos() : 0), entity.posZ - lenZ * hLimit.getValue(),
           entity.posX + lenX * hLimit.getValue(), entity.posY + lenY * (setY ? getYPos() : 1), entity.posZ + lenZ * hLimit.getValue());
-        GLUtil.drawAxisAlignedBBRel(aabb, color.getValue());
+        GLUtil.drawAxisAlignedBBRel(aabb, color.getColor());
     }
 }

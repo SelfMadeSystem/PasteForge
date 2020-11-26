@@ -34,6 +34,7 @@ public class ValuesTest extends Module {
     public PacketValue sPacketValue = (PacketValue) addValue(new PacketValue("SPacket", "Server Packet Value (:", SPacketPlayerPosLook.class, PacketValue.sPacketChoices));
     public PositionValue positionValue = (PositionValue) addValue(new PositionValue("Position", "Position Value (:"));
     public ColorValue colorValue = (ColorValue) addValue(new ColorValue("Color", "Color Value", Color.RED));
+    public FancyColorValue fancyColorValue = (FancyColorValue) addValue(new FancyColorValue("FancyColor", "Color Value", Color.BLUE));
 
     public ValuesTest() {
         super("ValuesTest", "Just testing values", ModuleCategory.MISC);

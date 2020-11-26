@@ -41,7 +41,7 @@ public class ColorSelectorGUI extends GuiScreen {
     public ColorSelectorGUI(GuiScreen prev, ColorValue value) {
         this.prev = prev;
         this.value = value;
-        Color color = value.getValue();
+        Color color = value.getColor();
         this.rgb = new Colour.RGB(color);
         this.hsv = Colour.rgb2hsv(color);
         this.alpha = color.getAlpha() / 255D;
@@ -50,18 +50,22 @@ public class ColorSelectorGUI extends GuiScreen {
     public void setRGB(Colour.RGB rgb) {
         this.rgb = rgb;
         this.hsv = Colour.rgb2hsv(rgb);
-        this.value.setValue(rgb.toColor(alpha));
+        this.value.setValue(rgb);
     }
 
     public void setHSV(Colour.HSV hsv) {
         this.hsv = hsv;
         this.rgb = Colour.hsv2rgb(hsv);
-        this.value.setValue(rgb.toColor(alpha));
+        this.value.setValue(hsv);
     }
 
     public void setAlpha(double alpha) {
         this.alpha = alpha;
-        this.value.setValue(rgb.toColor(alpha));
+        this.value.setAlpha(alpha);
+    }
+
+    public void check() {
+        if (!this.rgb.equals(this.value.getRGB())) setRGB(this.value.getRGB());
     }
 
     @Override
@@ -78,6 +82,7 @@ public class ColorSelectorGUI extends GuiScreen {
         sliderS.render(mouseX, mouseY);
         sliderV.render(mouseX, mouseY);
         sliderA.render(mouseX, mouseY);
+        check();
     }
 
     protected void keyTyped(char p_keyTyped_1_, int p_keyTyped_2_) {
