@@ -44,8 +44,13 @@ public class KillAura extends Module {
     public NumberValue aimRandomYaw = (NumberValue) addValue(new NumberValue("AimRandomYaw", "Randomizes your yaw in degrees.", 2, 0, 15, 0.1, NumberValue.NumberType.DECIMAL));
     public NumberValue aimRandomPitch = (NumberValue) addValue(new NumberValue("AimRandomPitch", "Error loading description.", 2, 0, 15, 0.1, NumberValue.NumberType.DECIMAL));
     public BoolValue silent = addBool("Silent", "If the KillAura rotations are silent.", true);
-    public BoolValue render = addBool("Render", "Render where you're aiming at.", true);
-    public NumberValue maxRange;
+    public BoolValue mark = addBool("Mark", "Whether to mark where you're aiming at.", true);
+    public ColorValue color = (ColorValue) addValue(new ColorValue("Mark Color", "Color for the marker.", new Color(0, 255, 0, 64)) {
+        @Override
+        public boolean isVisible() {
+            return mark.getValue();
+        }
+    });public NumberValue maxRange;
     public NumberValue maxAngle;
     public NumberValue minCPS = (NumberValue) addValue(new NumberValue("MinCPS", "Minimum CPS.", 9, 0, 20, 1, NumberValue.NumberType.INTEGER));
     public NumberValue maxCPS = (NumberValue) addValue(new NumberValue("MaxCPS", "Maximum CPS.", 13, 0, 20, 1, NumberValue.NumberType.INTEGER));
@@ -92,7 +97,7 @@ public class KillAura extends Module {
         }
         lastTarget = target;
         if (target != null) {
-            if (render.getValue()) render(target);
+            if (mark.getValue()) render(target);
             RotationUtil util = new RotationUtil(target, yaw, pitch);
             boolean setY = aimWhere.getValue() != 0;
             double sY = getYPos();
@@ -211,6 +216,6 @@ public class KillAura extends Module {
         boolean setY = aimWhere.getValue() != 0;
         aabb = new AxisAlignedBB(entity.posX - lenX * hLimit.getValue(), entity.posY + lenY * (setY ? getYPos() : 0), entity.posZ - lenZ * hLimit.getValue(),
           entity.posX + lenX * hLimit.getValue(), entity.posY + lenY * (setY ? getYPos() : 1), entity.posZ + lenZ * hLimit.getValue());
-        GLUtil.drawAxisAlignedBBRel(aabb, new Color(255, 0, 0, 64));
+        GLUtil.drawAxisAlignedBBRel(aabb, color.getValue());
     }
 }
