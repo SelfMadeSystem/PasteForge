@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import uwu.smsgamer.pasteclient.events.Render3DEvent;
 import uwu.smsgamer.pasteclient.injection.interfaces.IMixinMinecraft;
 import uwu.smsgamer.pasteclient.modules.*;
-import uwu.smsgamer.pasteclient.utils.GLUtil;
+import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
@@ -35,9 +35,7 @@ public class Tracers extends Module {
 
         GL11.glBegin(GL11.GL_LINES);
 
-        for (Entity entity : mc.world.loadedEntityList) {
-            drawTraces(entity);
-        }
+        for (Entity e : mc.world.loadedEntityList) if (TargetUtil.isValid(e)) drawTraces(e);
 
         GL11.glEnd();
 

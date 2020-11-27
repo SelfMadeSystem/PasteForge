@@ -52,6 +52,7 @@ public class KillAura extends Module {
         }
     });public NumberValue maxRange;
     public NumberValue maxAngle;
+    public BoolValue cooldown = (BoolValue) addValue(new BoolValue("Cooldown", "Uses item cooldown instead of CPS.", false));
     public NumberValue minCPS = (NumberValue) addValue(new NumberValue("MinCPS", "Minimum CPS.", 9, 0, 20, 1, NumberValue.NumberType.INTEGER));
     public NumberValue maxCPS = (NumberValue) addValue(new NumberValue("MaxCPS", "Maximum CPS.", 13, 0, 20, 1, NumberValue.NumberType.INTEGER));
     public NumberValue reach = (NumberValue) addValue(new NumberValue("Reach", "Reach for hitting entity.", 3, 0, 8, 0.025, NumberValue.NumberType.DECIMAL));
@@ -156,7 +157,8 @@ public class KillAura extends Module {
     private int nextAttack;
 
     public void attack() {
-        if (lastAttack++ >= nextAttack && lastTarget != null) {
+        if ((!cooldown.getValue() && lastAttack++ >= nextAttack && lastTarget != null) ||
+          (cooldown.getValue() && mc.player.getCooledAttackStrength(0.5F) >= 0.95F)) {
             float rY = mc.player.rotationYaw;
             float rP = mc.player.rotationPitch;
             float pRY = mc.player.prevRotationYaw;

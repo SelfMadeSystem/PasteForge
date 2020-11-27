@@ -19,7 +19,6 @@ import uwu.smsgamer.pasteclient.notifications.*;
 import uwu.smsgamer.pasteclient.values.BoolValue;
 
 public class SetbackDetector extends Module {
-
     private final BoolValue disableModules = addBool("Disable Modules",
       "Whether or not to disable movement modules when getting flagged", true);
 
@@ -30,6 +29,7 @@ public class SetbackDetector extends Module {
     @EventTarget
     private void onPacket(PacketEvent event) {
         if (!getState()) return;
+        // TODO: 2020-11-27 Make it so that it doesn't "flag" when joining server.
         if (event.getPacket() instanceof SPacketPlayerPosLook) {
             NotificationManager.show(new Notification(NotificationType.WARNING, getName(), "Flag detected", 1));
             if (disableModules.getValue()) {

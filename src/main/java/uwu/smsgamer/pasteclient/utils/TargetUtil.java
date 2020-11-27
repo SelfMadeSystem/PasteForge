@@ -5,22 +5,35 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
+import uwu.smsgamer.pasteclient.values.*;
 
 public class TargetUtil {
     private final static Minecraft mc = Minecraft.getMinecraft();
 
-    public static boolean players = true;
-    public static boolean mobs = true;
-    public static boolean animal = true;
-    public static boolean other = true;
+    public static BoolValue players = new BoolValue("Players", "Allows targeting of players.", true);
+    public static BoolValue mobs = new BoolValue("Mobs", "Allows targeting of mobs.", true);
+    public static BoolValue animals = new BoolValue("Animals", "Allows targeting of animals.", true);
+    public static BoolValue others = new BoolValue("Others", "Allows targeting of other entities.", true);
+    public static BoolValue invisible = new BoolValue("Invisible", "Allows targeting of invisible entities.", true);
+    public static BoolValue air = new BoolValue("Air", "Excludes entities in air (packet wise).", true);
+    public static BoolValue ground = new BoolValue("Ground", "Excludes entities on ground (packet wise).", true);
 
     public static boolean isValid(Entity entity) {
         if (!(entity instanceof EntityLivingBase)) return false;
         if (entity.equals(mc.player)) return false;
-        if (entity instanceof EntityPlayer) return players;
-        else if (entity instanceof EntityAnimal) return animal;
-        else if (entity instanceof EntityMob) return mobs;
-        else return other;
+        if (entity instanceof EntityPlayer) return players.getValue() && isInvisAllowed(entity) && checkBot(entity);
+        else if (entity instanceof EntityAnimal) return animals.getValue() && isInvisAllowed(entity) && checkBot(entity);
+        else if (entity instanceof EntityMob) return mobs.getValue() && isInvisAllowed(entity) && checkBot(entity);
+        else return others.getValue() && isInvisAllowed(entity) && checkBot(entity);
+    }
+
+    public static boolean isInvisAllowed(Entity entity) {
+        return invisible.getValue() || !entity.isInvisible();
+    }
+
+    public static boolean checkBot(Entity entity) {
+        return (!air.getValue() || !entity.isAirBorne) && (!ground.getValue() || !entity.onGround);
     }
 
     public static Entity getClosestEntity(double maxRange, double maxAngle) {

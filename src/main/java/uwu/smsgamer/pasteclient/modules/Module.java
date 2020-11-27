@@ -138,6 +138,10 @@ public abstract class Module { //TODO: ALSO NEED TO BE REDONE
         return (new IntChoiceValue(name, description, dVal, new StringHashMap<>(vals)));
     }
 
+    public static VoidValue genVoid(String name, String description) {
+        return new VoidValue(name, description);
+    }
+
     public BoolValue addBool(String name, String description, boolean dval) {
         return (BoolValue) addValue(genBool(name, description, dval));
     }
@@ -168,6 +172,10 @@ public abstract class Module { //TODO: ALSO NEED TO BE REDONE
 
     public IntChoiceValue addIntChoice(String name, String description, int dVal, Object... vals) {
         return (IntChoiceValue) addValue(genIntChoice(name, description, dVal, vals));
+    }
+
+    public VoidValue addVoid(String name, String description) {
+        return (VoidValue) addValue(genVoid(name, description));
     }
 
     public Value<?> addValue(Value<?> val) {

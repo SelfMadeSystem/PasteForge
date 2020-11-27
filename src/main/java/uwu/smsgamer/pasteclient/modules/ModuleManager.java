@@ -42,6 +42,7 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
         //Combat
         addModule(new AimBot());
         addModule(new KillAura());
+        addModule(new Targets());
 
         //Fun
         addModule(new DemoModeModule());

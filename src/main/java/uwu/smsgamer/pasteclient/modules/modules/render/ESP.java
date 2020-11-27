@@ -4,7 +4,7 @@ import com.darkmagician6.eventapi.EventTarget;
 import net.minecraft.entity.Entity;
 import uwu.smsgamer.pasteclient.events.Render3DEvent;
 import uwu.smsgamer.pasteclient.modules.*;
-import uwu.smsgamer.pasteclient.utils.GLUtil;
+import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
@@ -19,7 +19,7 @@ public class ESP extends Module {
     @EventTarget
     private void onRender(Render3DEvent event) {
         if (!getState()) return;
-        for (Entity entity : mc.world.loadedEntityList) if (!entity.equals(mc.player)) render(entity);
+        for (Entity e : mc.world.loadedEntityList) if (TargetUtil.isValid(e)) render(e);
     }
 
     private void render(Entity entity) {

@@ -124,10 +124,8 @@ public class RotationUtil {
         final double yawDifference = angleDiff(targetRotation.yaw, currentRotation.yaw);
         final double pitchDifference = angleDiff(targetRotation.pitch, currentRotation.pitch);
 
-        return new Rotation(
-          currentRotation.yaw + (yawDifference > turnSpeed ? turnSpeed : Math.max(yawDifference, -turnSpeed)),
-          currentRotation.pitch + (pitchDifference > turnSpeed ? turnSpeed : Math.max(pitchDifference, -turnSpeed)
-          ));
+        return new Rotation(currentRotation.yaw + (yawDifference > turnSpeed ? turnSpeed : Math.max(yawDifference, -turnSpeed)),
+          currentRotation.pitch + (pitchDifference > turnSpeed ? turnSpeed : Math.max(pitchDifference, -turnSpeed)));
     }
 
     public static Rotation rotationDiff(final Rotation a, final Rotation b) {
