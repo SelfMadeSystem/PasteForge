@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
+//TODO: This is skidded PLS REMAKE
 public class Tab<T> {
     @NotNull
     private List<SubTab<T>> subTabs = new ArrayList<>();

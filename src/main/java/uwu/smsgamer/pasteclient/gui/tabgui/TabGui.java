@@ -23,6 +23,7 @@ import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
+//TODO: This is skidded PLS REMAKE
 public class TabGui<T> {
     static final int OFFSET = 3;
     @NotNull

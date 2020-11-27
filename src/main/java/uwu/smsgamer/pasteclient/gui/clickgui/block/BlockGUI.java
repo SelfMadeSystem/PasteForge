@@ -108,11 +108,11 @@ public abstract class BlockGUI {
           getWidth() + spacing * 2, getHeight(), BlockClickGUI.GUI_COLOR.getColor());
         BlockClickGUI.renderer.drawOutline(getMidScreenX() - getWidth() / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
           getWidth() + spacing * 2, getHeight(), 2, BlockClickGUI.GUI_BORDER.getColor());
-        final int startY = getMidScreenY() - (getHeight() - spacing * 2) / 2;
-        final int stopY = getMidScreenY() + (getHeight() - spacing * 2) / 2;
+        List<BlockComponent> cmpts = new ArrayList<>(components);
+        final int startY = getMidScreenY() - (getHeight() - spacing * 2) / 2 - cmpts.get(0).getHeight()/2;
+        final int stopY = getMidScreenY() + (getHeight() + spacing * 2) / 2;
         int currentX = -getWidth() / 2 + BlockComponent.WIDTH.getInt() / 2 + WIDTH_ADD.getInt() / 2;
         int currentY = startY;
-        List<BlockComponent> cmpts = new ArrayList<>(components);
         for (BlockComponent component : cmpts) {
             currentY += component.getHeight() + spacing;
             if (currentY > stopY) {

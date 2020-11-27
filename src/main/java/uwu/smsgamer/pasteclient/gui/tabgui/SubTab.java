@@ -10,6 +10,7 @@
 
 package uwu.smsgamer.pasteclient.gui.tabgui;
 
+//TODO: This is skidded PLS REMAKE
 public class SubTab<T> {
     private String text;
     private TabActionListener<T> listener;

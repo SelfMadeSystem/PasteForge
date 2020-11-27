@@ -59,6 +59,7 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
         addModule(new ClickGUIModule());
         addModule(new ESP());
         addModule(new HUD());
+        addModule(new Tracers());
     }
 
     private void addModule(@NotNull Module module) {

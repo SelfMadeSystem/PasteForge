@@ -32,7 +32,7 @@ public class MixinEntityRenderer {
      * @author Sms_Gamer_3808
      */
     @Overwrite
-    public void getMouseOver(float partialTicks) { // TODO: 2020-11-19 Reach & KillAura (Custom rotations)
+    public void getMouseOver(float partialTicks) {
         mc.objectMouseOver = RaycastUtils.getRayTraceResult(partialTicks);
         /*Entity entity = this.mc.getRenderViewEntity();
         if (entity != null && this.mc.world != null) {

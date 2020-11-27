@@ -29,6 +29,7 @@ public class SetbackDetector extends Module {
 
     @EventTarget
     private void onPacket(PacketEvent event) {
+        if (!getState()) return;
         if (event.getPacket() instanceof SPacketPlayerPosLook) {
             NotificationManager.show(new Notification(NotificationType.WARNING, getName(), "Flag detected", 1));
             if (disableModules.getValue()) {
