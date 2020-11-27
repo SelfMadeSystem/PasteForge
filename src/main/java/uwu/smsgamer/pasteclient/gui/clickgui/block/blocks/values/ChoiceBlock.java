@@ -18,7 +18,7 @@ public class ChoiceBlock extends ValueBlock {
     @Override
     public void draw(int x, int y, int mouseX, int mouseY) {
         BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
-          getWidth(), getHeight(), isHovering(mouseX, mouseY) && canSelect() ? BlockClickGUI.CHOICE_HOVER : BlockClickGUI.CHOICE);
+          getWidth(), getHeight(), isHovering(mouseX, mouseY) && canSelect() ? BlockClickGUI.CHOICE_HOVER.getColor() : BlockClickGUI.CHOICE.getColor());
         BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2, value.getName(), Color.BLACK);
         setDescription(mouseX, mouseY);
     }

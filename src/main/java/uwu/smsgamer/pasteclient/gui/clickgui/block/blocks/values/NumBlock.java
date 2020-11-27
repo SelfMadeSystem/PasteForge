@@ -20,17 +20,17 @@ public class NumBlock extends ValueBlock {
 
         IRenderer rdr = BlockClickGUI.renderer;
 
-        rdr.drawRect(x - getWidth() / 2F, y + (HEIGHT / 4F),
-          getWidth(), HEIGHT / 4F, isSelected() ? BlockClickGUI.NUM_BG_SELECT :
-            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.NUM_BG_HOVER : BlockClickGUI.NUM_BG);
+        rdr.drawRect(x - getWidth() / 2F, y + (HEIGHT.getValue() / 4F),
+          getWidth(), HEIGHT.getValue() / 4F, isSelected() ? BlockClickGUI.NUM_BG_SELECT.getColor() :
+            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.NUM_BG_HOVER.getColor() : BlockClickGUI.NUM_BG.getColor());
 
-        rdr.drawRect(x - getWidth() / 2F, y + (HEIGHT / 4F),
-          getWidth() * value.getValScaled(), HEIGHT / 4F, isSelected() ? BlockClickGUI.NUM_SLIDER_SELECT :
-            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.NUM_SLIDER_HOVER : BlockClickGUI.NUM_SLIDER);
+        rdr.drawRect(x - getWidth() / 2F, y + (HEIGHT.getValue() / 4F),
+          getWidth() * value.getValScaled(), HEIGHT.getValue() / 4F, isSelected() ? BlockClickGUI.NUM_SLIDER_SELECT.getColor() :
+            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.NUM_SLIDER_HOVER.getColor() : BlockClickGUI.NUM_SLIDER.getColor());
 
         rdr.drawOutline(x - getWidth() / 2F - 2, y - (getHeight()) / 2F,
           getWidth() + 4, getHeight(), 2, Color.BLACK);
-        rdr.drawString(x - getWidth() / 2, y - HEIGHT / 4 * 3 + 4, value.getName(), Color.BLACK);
+        rdr.drawString(x - getWidth() / 2, y - HEIGHT.getInt() / 4 * 3 + 4, value.getName(), Color.BLACK);
 
         String owo = value.getValStr();
         boolean hasMin = value.getMin() != 0;
@@ -47,13 +47,13 @@ public class NumBlock extends ValueBlock {
 //                break;
         }
 
-        rdr.drawString(x + getWidth() / 2 - rdr.getStringWidth(owo) - 2, y - HEIGHT / 4 * 3 + 4, owo, Color.BLACK);
+        rdr.drawString(x + getWidth() / 2 - rdr.getStringWidth(owo) - 2, y - HEIGHT.getInt() / 4 * 3 + 4, owo, Color.BLACK);
         setDescription(mouseX, mouseY);
     }
 
     @Override
     public int getHeight() {
-        return (int) (HEIGHT * 1.25);
+        return (int) (HEIGHT.getValue() * 1.25);
     }
 
     @Override

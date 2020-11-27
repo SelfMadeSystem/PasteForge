@@ -1,11 +1,12 @@
 package uwu.smsgamer.pasteclient.gui.clickgui.block;
 
 import net.minecraft.client.Minecraft;
+import uwu.smsgamer.pasteclient.values.NumberValue;
 
 public abstract class BlockComponent {
     protected static final Minecraft mc = Minecraft.getMinecraft();
-    public static final int WIDTH = 350;
-    public static final int HEIGHT = 20;
+    public static final NumberValue WIDTH = new NumberValue("Width", "Width for each component", 350, 100, 1000, 10, NumberValue.NumberType.INTEGER);
+    public static final NumberValue HEIGHT = new NumberValue("Height", "Height for each component", 20, 5, 50, 1, NumberValue.NumberType.INTEGER);
     public final BlockGUI gui;
     public int lastX, lastY;
 
@@ -27,11 +28,11 @@ public abstract class BlockComponent {
     }
 
     public int getWidth() {
-        return WIDTH;
+        return WIDTH.getInt();
     }
 
     public int getHeight() {
-        return HEIGHT;
+        return HEIGHT.getInt();
     }
 
     public boolean guiSelected() {

@@ -20,8 +20,8 @@ public class ModuleBlock extends BlockComponent {
     public void draw(int x, int y, int mouseX, int mouseY) {
         BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
           getWidth(), getHeight(), canSelect() && isHovering(mouseX, mouseY) ?
-            (module.getState() ? BlockClickGUI.MODULE_ON_HOVER : BlockClickGUI.MODULE_OFF_HOVER) :
-            (module.getState() ? BlockClickGUI.MODULE_ON : BlockClickGUI.MODULE_OFF));
+            (module.getState() ? BlockClickGUI.MODULE_ON_HOVER.getColor() : BlockClickGUI.MODULE_OFF_HOVER.getColor()) :
+            (module.getState() ? BlockClickGUI.MODULE_ON.getColor() : BlockClickGUI.MODULE_OFF.getColor()));
         BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2, module.getName(), Color.BLACK);
         if (canSelect() && isHovering(mouseX, mouseY)) {
             wasSet = true;

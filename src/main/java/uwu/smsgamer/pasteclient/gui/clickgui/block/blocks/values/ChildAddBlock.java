@@ -14,7 +14,7 @@ public class ChildAddBlock extends ValueBlock {
     @Override
     public void draw(int x, int y, int mouseX, int mouseY) {
         BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
-          getWidth(), getHeight(), canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.ADD_HOVER : BlockClickGUI.ADD);
+          getWidth(), getHeight(), canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.ADD_HOVER.getColor() : BlockClickGUI.ADD.getColor());
         int width = BlockClickGUI.renderer.getStringWidth("+");
         BlockClickGUI.renderer.drawString(x - width / 2, y - getHeight() / 2, "+", Color.BLACK);
     }

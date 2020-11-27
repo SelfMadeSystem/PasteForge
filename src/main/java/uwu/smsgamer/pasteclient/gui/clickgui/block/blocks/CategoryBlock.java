@@ -18,7 +18,7 @@ public class CategoryBlock extends BlockComponent {
     @Override
     public void draw(int x, int y, int mouseX, int mouseY) {
         BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
-          getWidth(), getHeight(), canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.CATEGORY_HOVER : BlockClickGUI.CATEGORY);
+          getWidth(), getHeight(), canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.CATEGORY_HOVER.getColor() : BlockClickGUI.CATEGORY.getColor());
         BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2, category.getName(), Color.BLACK);
     }
 

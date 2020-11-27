@@ -12,7 +12,7 @@ public class BackBlock extends BlockComponent {
     @Override
     public void draw(int x, int y, int mouseX, int mouseY) {
         BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
-          getWidth(), getHeight(), canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.BACK_HOVER : BlockClickGUI.BACK);
+          getWidth(), getHeight(), canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.BACK_HOVER.getColor() : BlockClickGUI.BACK.getColor());
         BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2, "Back", Color.BLACK);
     }
 

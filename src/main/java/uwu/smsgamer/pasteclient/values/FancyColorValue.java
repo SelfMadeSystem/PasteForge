@@ -172,6 +172,7 @@ public class FancyColorValue extends ColorValue implements Cloneable {
         FancyColorValue value = this.clone();
         value.name = name;
         value.description = description;
+        // TODO: 2020-11-26 clone childen values 
         return value;
     }
 }

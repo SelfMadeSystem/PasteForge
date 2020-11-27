@@ -3,15 +3,16 @@ package uwu.smsgamer.pasteclient.gui.clickgui.block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.jetbrains.annotations.Nullable;
+import uwu.smsgamer.pasteclient.values.NumberValue;
 
 import java.util.*;
 
 public abstract class BlockGUI {
     protected static final Minecraft mc = Minecraft.getMinecraft();
     protected static final int spacing = 10;
-    protected static final int WIDTH = BlockComponent.WIDTH + 2;
-    protected static final int childOffset = 80;
-    protected static final int animationTime = 250;
+    public static final NumberValue WIDTH_ADD = new NumberValue("WidthAdd", "Adding to the component width", 2, -10, 10, 1, NumberValue.NumberType.INTEGER);
+    public static final NumberValue childOffset = new NumberValue("ComponentOffset", "Offset for each component", 80, 0, 500, 10, NumberValue.NumberType.INTEGER);
+    public static final NumberValue animationTime = new NumberValue("AnimationTime", "Time for the animation", 250, 0, 1000, 50, NumberValue.NumberType.INTEGER);
     @Nullable
     public BlockGUI child = null;
     public BlockGUI pastChild = null;
@@ -34,7 +35,7 @@ public abstract class BlockGUI {
         if (child == null && this.child != null) {
             this.pastChild = this.child;
             this.pastChild.despawned = true;
-            this.pastChild.despawnTime = animationTime;
+            this.pastChild.despawnTime = animationTime.getInt();
         }
         this.child = child;
     }
@@ -43,11 +44,11 @@ public abstract class BlockGUI {
         double d = 0;
         BlockGUI child = this.child;
         while (child != null) {
-            d += (double) child.spawnTime / animationTime;
-            if (child.pastChild != null) d += (double) child.pastChild.despawnTime / animationTime;
+            d += (double) child.spawnTime / animationTime.getInt();
+            if (child.pastChild != null) d += (double) child.pastChild.despawnTime / animationTime.getInt();
             child = child.child;
         }
-        if (pastChild != null) d += (double) pastChild.despawnTime / animationTime;
+        if (pastChild != null) d += (double) pastChild.despawnTime / animationTime.getInt();
         return d;
     }
 
@@ -67,14 +68,14 @@ public abstract class BlockGUI {
 
     public int getHeight() {
         if (sizeCached) return cachedHeight;
-        cachedWidth = WIDTH;
-        int stop = getMidScreenY() * 2 - BlockComponent.HEIGHT * 4;
+        cachedWidth = BlockComponent.WIDTH.getInt() + WIDTH_ADD.getInt();
+        int stop = getMidScreenY() * 2 - BlockComponent.HEIGHT.getInt() * 4;
         int height0 = spacing;
         int height = spacing;
         for (BlockComponent component : components) {
             height += component.getHeight() + spacing;
             if (height > stop) {
-                cachedWidth += WIDTH;
+                cachedWidth += BlockComponent.WIDTH.getInt() + WIDTH_ADD.getInt();
                 height0 = Math.max(height0, height);
                 height = spacing;
             }
@@ -95,28 +96,28 @@ public abstract class BlockGUI {
                 parent.pastChild = null;
                 return;
             }
-            BlockClickGUI.renderer.setOpacity((double) despawnTime / animationTime);
+            BlockClickGUI.renderer.setOpacity((double) despawnTime / animationTime.getInt());
         } else {
-            if (spawnTime < animationTime) spawnTime += timeDiff;
-            if (spawnTime > animationTime) spawnTime = animationTime;
-            BlockClickGUI.renderer.setOpacity((double) spawnTime / animationTime);
+            if (spawnTime < animationTime.getInt()) spawnTime += timeDiff;
+            if (spawnTime > animationTime.getInt()) spawnTime = animationTime.getInt();
+            BlockClickGUI.renderer.setOpacity((double) spawnTime / animationTime.getInt());
         }
-        int xOffset = (int) (childOffset * getChildCount());
+        int xOffset = (int) (childOffset.getInt() * getChildCount());
         BlockClickGUI.renderer.drawRect(0, 0, getMidScreenX() * 2, getMidScreenY() * 2, BlockClickGUI.GUI_BACKGROUND.getColor());
         BlockClickGUI.renderer.drawRect(getMidScreenX() - getWidth() / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
-          getWidth() + spacing * 2, getHeight(), BlockClickGUI.GUI_COLOR);
+          getWidth() + spacing * 2, getHeight(), BlockClickGUI.GUI_COLOR.getColor());
         BlockClickGUI.renderer.drawOutline(getMidScreenX() - getWidth() / 2F - spacing - xOffset, getMidScreenY() - getHeight() / 2F + spacing,
-          getWidth() + spacing * 2, getHeight(), 2, BlockClickGUI.GUI_BORDER);
-        final int startY = getMidScreenY() - getHeight() / 2;
-        final int stopY = getMidScreenY() + getHeight() / 2;
-        int currentX = -getWidth() / 2 + WIDTH / 2;
+          getWidth() + spacing * 2, getHeight(), 2, BlockClickGUI.GUI_BORDER.getColor());
+        final int startY = getMidScreenY() - (getHeight() - spacing * 2) / 2;
+        final int stopY = getMidScreenY() + (getHeight() - spacing * 2) / 2;
+        int currentX = -getWidth() / 2 + BlockComponent.WIDTH.getInt() / 2 + WIDTH_ADD.getInt() / 2;
         int currentY = startY;
         List<BlockComponent> cmpts = new ArrayList<>(components);
         for (BlockComponent component : cmpts) {
             currentY += component.getHeight() + spacing;
             if (currentY > stopY) {
                 currentY = startY + component.getHeight() + spacing;
-                currentX += WIDTH;
+                currentX += BlockComponent.WIDTH.getInt() + WIDTH_ADD.getInt();
             }
             component.render(getMidScreenX() - xOffset + currentX, currentY, mouseX, mouseY);
         }

@@ -49,8 +49,8 @@ public class ChoiceGUI extends BlockGUI {
         public void draw(int x, int y, int mouseX, int mouseY) {
             BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
               getWidth(), getHeight(), (canSelect() && isHovering(mouseX, mouseY)) ?
-                (valIsSelected() ? BlockClickGUI.CHOICE_SELECT_HOVER : BlockClickGUI.CHOICE_UNSELECT_HOVER) :
-                (valIsSelected() ? BlockClickGUI.CHOICE_SELECT : BlockClickGUI.CHOICE_UNSELECT));
+                (valIsSelected() ? BlockClickGUI.CHOICE_SELECT_HOVER.getColor() : BlockClickGUI.CHOICE_UNSELECT_HOVER.getColor()) :
+                (valIsSelected() ? BlockClickGUI.CHOICE_SELECT.getColor() : BlockClickGUI.CHOICE_UNSELECT.getColor()));
             BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2, name, Color.BLACK);
         }
 

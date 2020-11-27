@@ -15,8 +15,8 @@ public class StringBlock extends ValueBlock {
     @Override
     public void draw(int x, int y, int mouseX, int mouseY) {
         BlockClickGUI.renderer.drawRect(x - getWidth() / 2F, y - getHeight() / 2F,
-          getWidth(), getHeight(), isSelected() ? BlockClickGUI.STR_SELECT :
-            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.STR_HOVER : BlockClickGUI.STR);
+          getWidth(), getHeight(), isSelected() ? BlockClickGUI.STR_SELECT.getColor() :
+            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.STR_HOVER.getColor() : BlockClickGUI.STR.getColor());
         int height = BlockClickGUI.renderer.getStringHeight("");
         BlockClickGUI.renderer.drawString(x - getWidth() / 2, y - getHeight() / 2 + 2, value.getName(), Color.BLACK);
         BlockClickGUI.renderer.drawString(x - getWidth() / 2, y + getHeight() / 2 - height - 2, value.getValStr(), Color.BLACK);
@@ -25,7 +25,7 @@ public class StringBlock extends ValueBlock {
 
     @Override
     public int getHeight() {
-        return HEIGHT * 2;
+        return super.getHeight() * 2;
     }
 
     @Override
