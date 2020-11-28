@@ -176,6 +176,11 @@ public class GLUtil {
         drawAxisAlignedBB(axisAlignedBB.offset(-manager.viewerPosX, -manager.viewerPosY, -manager.viewerPosZ), color);
     }
 
+    public static AxisAlignedBB getAxisAlignedBBRel(final AxisAlignedBB axisAlignedBB) {
+        RenderManager manager = Minecraft.getMinecraft().getRenderManager();
+        return axisAlignedBB.offset(-manager.viewerPosX, -manager.viewerPosY, -manager.viewerPosZ);
+    }
+
     ////////////////////////////////////////////
     //              LIQUIDBOUNCE              //
     ////////////////////////////////////////////

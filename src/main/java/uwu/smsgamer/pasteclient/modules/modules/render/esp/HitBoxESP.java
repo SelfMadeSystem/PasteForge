@@ -1,0 +1,102 @@
+package uwu.smsgamer.pasteclient.modules.modules.render.esp;
+
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
+import uwu.smsgamer.pasteclient.events.Render3DEvent;
+import uwu.smsgamer.pasteclient.utils.*;
+
+import java.awt.*;
+
+import static org.lwjgl.opengl.GL11.*;
+
+public class HitBoxESP extends ESPModule {
+    @Override
+    public void onRender(Render3DEvent event, Color color) {
+        for (Entity e : mc.world.loadedEntityList) if (TargetUtil.isValid(e)) esp(e, color);
+    }
+
+    public void esp(Entity e, Color c) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glLineWidth(2F);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(false);
+        GLUtil.glColor(c);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+
+        bufferBuilder.begin(GL_LINE_LOOP, DefaultVertexFormats.POSITION);
+
+        // Draw here
+
+        AxisAlignedBB aabb = GLUtil.getAxisAlignedBBRel(e.getEntityBoundingBox());
+
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex();
+
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex();
+
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex();
+
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex();
+
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex();
+
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex();
+        bufferBuilder.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex();
+
+
+        // End drawing
+
+        tessellator.draw();
+
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(true);
+        glDisable(GL_BLEND);
+    }
+}
