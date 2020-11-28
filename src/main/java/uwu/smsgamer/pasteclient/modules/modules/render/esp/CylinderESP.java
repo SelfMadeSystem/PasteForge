@@ -4,9 +4,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.*;
-import org.lwjgl.util.glu.*;
 import uwu.smsgamer.pasteclient.events.Render3DEvent;
-import uwu.smsgamer.pasteclient.modules.modules.render.ESP;
 import uwu.smsgamer.pasteclient.utils.*;
 
 import java.awt.*;
@@ -18,7 +16,7 @@ public class CylinderESP extends ESPModule {
     public void onRender(Render3DEvent event, Color c) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_BLEND);
-        glLineWidth(ESP.getInstance().lineWidth.getValue().floatValue());
+        glDisable(GL_CULL_FACE);
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_DEPTH_TEST);
         glDepthMask(false);
@@ -27,6 +25,7 @@ public class CylinderESP extends ESPModule {
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
         glDepthMask(true);
         glDisable(GL_BLEND);
     }
@@ -45,15 +44,26 @@ public class CylinderESP extends ESPModule {
 
         int add = 10;
 
-        for (int i = 0; i < 360; i += add) { //todo
+        for (int i = 0; i < 360; i += add) {
+            double outX0 = + MathUtil.cos(i) * sizeX;
+            double outX1 = + MathUtil.cos(i + add) * sizeX;
+            double outZ0 = + MathUtil.sin(i) * sizeZ;
+            double outZ1 = + MathUtil.sin(i + add) * sizeZ;
             bufferBuilder.pos(center.x, aabb.minY, center.z).endVertex();
-            bufferBuilder.pos(center.x + MathUtil.cos(i) * sizeX, aabb.minY, center.z + MathUtil.sin(i) * sizeZ).endVertex();
-            bufferBuilder.pos(center.x + MathUtil.cos(i + add) * sizeX, aabb.minY, center.z + MathUtil.sin(i + add) * sizeZ).endVertex();
+            bufferBuilder.pos(center.x + outX0, aabb.minY, center.z + outZ0).endVertex();
+            bufferBuilder.pos(center.x + outX1, aabb.minY, center.z + outZ1).endVertex();
 
-            bufferBuilder.pos(center.x, aabb.minY, center.z).endVertex();
-            bufferBuilder.pos(center.x + MathUtil.cos(i) * sizeX, aabb.minY, center.z + MathUtil.sin(i) * sizeZ).endVertex();
-            bufferBuilder.pos(center.x + MathUtil.cos(i + add) * sizeX, aabb.minY, center.z + MathUtil.sin(i + add) * sizeZ).endVertex();
+            bufferBuilder.pos(center.x, aabb.maxY, center.z).endVertex();
+            bufferBuilder.pos(center.x + outX0, aabb.maxY, center.z + outZ0).endVertex();
+            bufferBuilder.pos(center.x + outX1, aabb.maxY, center.z + outZ1).endVertex();
 
+            bufferBuilder.pos(center.x + outX0, aabb.minY, center.z + outZ0).endVertex();
+            bufferBuilder.pos(center.x + outX0, aabb.maxY, center.z + outZ0).endVertex();
+            bufferBuilder.pos(center.x + outX1, aabb.maxY, center.z + outZ1).endVertex();
+
+            bufferBuilder.pos(center.x + outX1, aabb.maxY, center.z + outZ1).endVertex();
+            bufferBuilder.pos(center.x + outX1, aabb.minY, center.z + outZ1).endVertex();
+            bufferBuilder.pos(center.x + outX0, aabb.minY, center.z + outZ0).endVertex();
         }
 
         // End drawing
