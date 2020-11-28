@@ -18,6 +18,19 @@ public class TargetUtil {
     public static BoolValue invisible = new BoolValue("Invisible", "Allows targeting of invisible entities.", true);
     public static BoolValue air = new BoolValue("Air", "Excludes entities in air (packet wise).", true);
     public static BoolValue ground = new BoolValue("Ground", "Excludes entities on ground (packet wise).", true);
+    public static BoolValue tab = new BoolValue("Tab", "Excludes entities that are not in the tablist.", true);
+    public static BoolValue tabEquals = new BoolValue("TabEquals", "Only allows equals strings instead of contains.", true) {
+        @Override
+        public boolean isVisible() {
+            return tab.getValue();
+        }
+    };
+    public static BoolValue tabCase = new BoolValue("TabCase", "Is case sensitive.", true) {
+        @Override
+        public boolean isVisible() {
+            return tab.getValue();
+        }
+    };
 
     public static boolean isValid(Entity entity) {
         if (!(entity instanceof EntityLivingBase)) return false;
@@ -33,7 +46,17 @@ public class TargetUtil {
     }
 
     public static boolean checkBot(Entity entity) {
-        return (!air.getValue() || !entity.isAirBorne) && (!ground.getValue() || !entity.onGround);
+        String entityName = entity.getName();
+        return !(entity instanceof EntityPlayer) || (!air.getValue() || entity.onGround) && (!ground.getValue() || !entity.onGround) &&
+          (!tab.getValue() || mc.player.connection.getPlayerInfoMap().stream().anyMatch(info -> {
+              if (tabEquals.getValue() && tabCase.getValue())
+                return info.getGameProfile().getName().equals(entityName);
+              else if (tabEquals.getValue() && !tabCase.getValue())
+                  return info.getGameProfile().getName().equalsIgnoreCase(entityName);
+              else if (!tabEquals.getValue() && tabCase.getValue())
+                  return info.getGameProfile().getName().contains(entityName);
+              else return info.getGameProfile().getName().toLowerCase().contains(entityName.toLowerCase());
+          }));
     }
 
     public static Entity getClosestEntity(double maxRange, double maxAngle) {

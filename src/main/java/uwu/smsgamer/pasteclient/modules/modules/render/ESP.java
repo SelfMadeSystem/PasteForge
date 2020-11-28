@@ -2,6 +2,7 @@ package uwu.smsgamer.pasteclient.modules.modules.render;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.google.gson.*;
+import net.minecraft.client.renderer.entity.RenderEntity;
 import uwu.smsgamer.pasteclient.events.Render3DEvent;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.modules.modules.render.esp.*;
@@ -34,7 +35,6 @@ public class ESP extends Module {
           new OutlineBoxESP(), "OutlineBox",
           new CylinderESP(), "Cylinder",
           new OutlinedCylinderESP(), "Cylinder Outlined",
-          BoxESP.getInstance(), "Outline",
           new DickESP(), "Dick")));
     }
 

@@ -15,6 +15,9 @@ public class Targets extends Module {
         VoidValue antiBot = addVoid("AntiBot", "Settings to bypass bots.");
         antiBot.addChild(TargetUtil.air);
         antiBot.addChild(TargetUtil.ground);
+        antiBot.addChild(TargetUtil.tab);
+        antiBot.addChild(TargetUtil.tabEquals);
+        antiBot.addChild(TargetUtil.tabCase);
     }
 
     @Override
