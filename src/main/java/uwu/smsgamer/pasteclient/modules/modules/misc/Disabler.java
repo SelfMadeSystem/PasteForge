@@ -56,22 +56,17 @@ public class Disabler extends Module {
         CPacketClientStatus.State.REQUEST_STATS, "REQUEST_STATS")) {
         @Override
         public boolean isVisible() {
-            return sendPacket.getValue().equals(CPacketAnimation.class);
-        }
-
-        @Override
-        public JsonElement toElement() {
-            return new JsonPrimitive(choices.get(value));
-        }
-
-        @Override
-        public void fromElement(JsonElement ele) {
-            value = choices.getReversedMap().get(ele.getAsString());
+            return sendPacket.getValue().equals(CPacketClientStatus.class);
         }
     });
 
     public Disabler() {
-        super("Disabler", "Attempts to disable anticheat", ModuleCategory.MISC);
+        super("Disabler", "Attempts to disable the anticheat", ModuleCategory.MISC);
+    }
+
+    @Override
+    public void onEnable() {
+        if (mc.player == null) setState(false);
     }
 
     @EventTarget

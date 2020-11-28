@@ -1,10 +1,11 @@
 package uwu.smsgamer.pasteclient.values;
 
+import com.google.gson.*;
 import uwu.smsgamer.pasteclient.utils.StringHashMap;
 
 import java.util.Collection;
 
-public abstract class ChoiceValue<T> extends Value<T> {
+public class ChoiceValue<T> extends Value<T> {
 
     protected StringHashMap<T> choices;
 
@@ -28,5 +29,16 @@ public abstract class ChoiceValue<T> extends Value<T> {
 
     public Collection<String> getChoicesAsString(T t) {
         return choices.values();
+    }
+
+    @Override
+    public JsonElement toElement() {
+        return new JsonPrimitive(choices.get(value));
+    }
+
+    @Override
+    public void fromElement(JsonElement ele) {
+        value = choices.getReversedMap().get(ele.getAsString());
+        if (value == null) value = dVal;
     }
 }

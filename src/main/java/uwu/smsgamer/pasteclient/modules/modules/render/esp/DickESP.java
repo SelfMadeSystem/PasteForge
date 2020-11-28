@@ -15,17 +15,15 @@ public class DickESP extends ESPModule {
     public BoolValue animation = new BoolValue("Animation", "Animation for DickESP", true) {
         @Override
         public boolean isVisible() {
-            return ESP.getInstance().mode.getValue() == 5;
+            return selected();
         }
     };
     private int amount;
     private float spin;
     private float cumSize;
 
-    private static DickESP instance;
-    public static DickESP getInstance() {
-      if (instance == null) instance = new DickESP();
-      return instance;
+    public DickESP() {
+        ESP.getInstance().addValue(animation);
     }
 
     @Override

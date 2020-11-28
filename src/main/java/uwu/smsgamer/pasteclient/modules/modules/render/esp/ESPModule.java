@@ -2,6 +2,7 @@ package uwu.smsgamer.pasteclient.modules.modules.render.esp;
 
 import net.minecraft.client.Minecraft;
 import uwu.smsgamer.pasteclient.events.Render3DEvent;
+import uwu.smsgamer.pasteclient.modules.modules.render.ESP;
 
 import java.awt.*;
 
@@ -13,4 +14,8 @@ public abstract class ESPModule {
     }
 
     public abstract void onRender(Render3DEvent event, Color color);
+
+    public boolean selected() {
+        return ESP.getInstance().mode.getValue().equals(this);
+    }
 }
