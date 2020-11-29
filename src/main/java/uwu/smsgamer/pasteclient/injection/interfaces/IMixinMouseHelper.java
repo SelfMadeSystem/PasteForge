@@ -1,7 +1,10 @@
 package uwu.smsgamer.pasteclient.injection.interfaces;
 
 public interface IMixinMouseHelper {
-    // 0 none, 1 set, 2 add, 3 mult/div side
+    /**
+     * 0 none, 1 set, 2 add, 3 mult/div side
+     * @param mode Mode for the type.
+     */
     void setMode(int mode);
 
     void reset();

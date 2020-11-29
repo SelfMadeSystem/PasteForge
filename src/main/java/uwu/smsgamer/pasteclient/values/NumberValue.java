@@ -80,7 +80,7 @@ public class NumberValue extends Value<Double> {
         DECIMAL(number -> String.format(Locale.ENGLISH, "%.4f", number.floatValue())),
         INTEGER(number -> Long.toString(number.longValue()));
 
-        private final Function<Number, String> formatter;
+        final Function<Number, String> formatter;
 
         NumberType(Function<Number, String> formatter) {
             this.formatter = formatter;

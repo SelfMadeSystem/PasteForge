@@ -126,6 +126,10 @@ public abstract class Module { //TODO: ALSO NEED TO BE REDONE
         return (new NumberValue(name, description, dVal, min, max, step, type));
     }
 
+    public static RangeValue genRange(String name, String description, Number dMin, Number dMax, Number min, Number max, Number step, NumberValue.NumberType type) {
+        return (new RangeValue(name, description, dMin, dMax, min, max, step, type));
+    }
+
     public static StringValue genStr(String name, String description, String dVal) {
         return (new StringValue(name, description, dVal));
     }
@@ -160,6 +164,10 @@ public abstract class Module { //TODO: ALSO NEED TO BE REDONE
 
     public NumberValue addNum(String name, String description, Number dVal, Number min, Number max, Number step, NumberValue.NumberType type) {
         return (NumberValue) addValue(genNum(name, description, dVal, min, max, step, type));
+    }
+
+    public RangeValue addRange(String name, String description, Number dMin,Number dMax, Number min, Number max, Number step, NumberValue.NumberType type) {
+        return (RangeValue) addValue(genRange(name, description, dMin, dMax, min, max, step, type));
     }
 
     public StringValue addStr(String name, String description, String dVal) {

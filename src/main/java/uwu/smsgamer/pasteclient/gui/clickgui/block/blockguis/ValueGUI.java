@@ -33,6 +33,8 @@ public class ValueGUI extends BlockGUI {
                     components.add(new BoolBlock(this, (BoolValue) value));
                 } else if (value instanceof NumberValue) {
                     components.add(new NumBlock(this, (NumberValue) value));
+                } else if (value instanceof RangeValue) {
+                    components.add(new RangeBlock(this, (RangeValue) value));
                 } else if (value instanceof ChoiceValue) {
                     components.add(new ChoiceBlock(this, (ChoiceValue<?>) value));
                 } else if (value instanceof StringValue) {

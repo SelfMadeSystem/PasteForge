@@ -14,6 +14,9 @@ public class ValuesTest extends Module {
     public NumberValue deciVal = addDeci("DeciVal", "Decimal Value", 4, 0.0, 5, 0.1);
     public NumberValue intVal = addInt("IntVal", "Decimal Value", 4, 0, 5);
     public NumberValue perVal = addPer("PerVal", "Percentage Value", 0.5);
+    public RangeValue rangeValInt = addRange("RangeValInt", "Range Value Integer", 2, 4, 0, 5, 1, NumberValue.NumberType.INTEGER);
+    public RangeValue rangeValDeci = addRange("RangeValDeci", "Range Value Decimal", 1.2, 5.3, -2, 13, 0.05, NumberValue.NumberType.DECIMAL);
+    public RangeValue rangeValPer = addRange("RangeValPer", "Range Value Percentage", 0.3, 0.5, 0, 1, 0.01, NumberValue.NumberType.PERCENT);
     public StrChoiceValue strChoiceValue = addStrChoice("StrChoice", "String Choice", "a",
       "a", "zero",
       "b", "one",
