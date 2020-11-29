@@ -102,7 +102,7 @@ public class AimBot extends Module {
     public NumberValue maxAngle;
 
     public AimBot() {
-        super("AimBot", "Automatically aims a entities", ModuleCategory.COMBAT);
+        super("AimBot", "Automatically aims at entities", ModuleCategory.COMBAT);
         targetMode.addChild(maxRange = genDeci("MaxRange", "Maximum distance the entity has to be in blocks.", 6, 2, 16, 0.5));
         targetMode.addChild(maxAngle = genInt("MaxAngle", "Maximum angle the entity has to be in degrees.", 180, 0, 180));
     }
