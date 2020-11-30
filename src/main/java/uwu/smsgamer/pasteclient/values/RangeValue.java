@@ -3,7 +3,7 @@ package uwu.smsgamer.pasteclient.values;
 import com.google.gson.*;
 import uwu.smsgamer.pasteclient.utils.*;
 
-public class RangeValue extends Value<Pair<Double, Double>> {
+public class RangeValue extends Value<Pair<Double, Double>> { // FIXME: 2020-11-30 FIX ME!!!!!!!!!!!!! I'm broken!!!!!!!
     protected Double min;
     protected Double max;
     protected Double step;
@@ -87,7 +87,7 @@ public class RangeValue extends Value<Pair<Double, Double>> {
     }
 
     public double getRandomValue() {
-        return Math.random() * (this.value.a - this.value.b) + this.value.a;
+        return Math.random() * Math.abs(this.value.a - this.value.b) + Math.min(this.value.a, this.value.b);
     }
 
     @Override
@@ -98,15 +98,15 @@ public class RangeValue extends Value<Pair<Double, Double>> {
     @Override
     public JsonElement toElement() {
         JsonObject object = new JsonObject();
-        object.add("min", new JsonPrimitive(value.a));
-        object.add("max", new JsonPrimitive(value.b));
+        object.add("a", new JsonPrimitive(value.a));
+        object.add("b", new JsonPrimitive(value.b));
         return object;
     }
 
     @Override
     public void fromElement(JsonElement ele) {
         JsonObject object = (JsonObject) ele;
-        value.a = object.get("min").getAsDouble();
-        value.b = object.get("max").getAsDouble();
+        value.a = object.get("a").getAsDouble();
+        value.b = object.get("b").getAsDouble();
     }
 }

@@ -1,13 +1,17 @@
 package uwu.smsgamer.pasteclient.injection.mixins.util;
 
+import com.darkmagician6.eventapi.EventManager;
+import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.util.MouseHelper;
 import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.*;
+import uwu.smsgamer.pasteclient.events.MouseMoveEvent;
 import uwu.smsgamer.pasteclient.injection.interfaces.IMixinMouseHelper;
 
 @Mixin(MouseHelper.class)
 public class MixinMouseHelper implements IMixinMouseHelper {
-    @Shadow public int deltaX, deltaY;
+    @Shadow
+    public int deltaX, deltaY;
     public int mode;
     public boolean sideX, sideY;
     public int x, y;
@@ -19,8 +23,9 @@ public class MixinMouseHelper implements IMixinMouseHelper {
      */
     @Overwrite
     public void mouseXYChange() {
-        int dX = Mouse.getDX();
-        int dY = Mouse.getDY();
+        final int dX = Mouse.getDX();
+        final int dY = Mouse.getDY();
+        EventManager.call(new MouseMoveEvent(EventType.PRE, dX, dY));
         switch (mode) {
             case 0:
                 deltaX = dX;
@@ -35,13 +40,18 @@ public class MixinMouseHelper implements IMixinMouseHelper {
                 deltaY = dY + addY;
                 break;
             case 3:
-                if ((dX > 0 && sideX) || (dX < 0 && !sideX)) dX *= multX;
-                else dX /= divX;
-                if ((dY > 0 && sideY) || (dY < 0 && !sideY)) dY *= multY;
-                else dY /= divY;
-                deltaX = dX;
-                deltaY = dY;
+                int nX = dX;
+                int nY = dY;
+
+                if (dX > 0 == sideX) nX *= multX;
+                else nX /= divX;
+                if (dY > 0 == sideY) nY *= multY;
+                else nY /= divY;
+
+                deltaX = nX;
+                deltaY = nY;
         }
+        EventManager.call(new MouseMoveEvent(EventType.POST, deltaX, deltaY, dX, dY));
     }
 
     @Override

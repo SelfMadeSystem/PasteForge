@@ -2,7 +2,7 @@ package uwu.smsgamer.pasteclient.modules.modules.combat;
 
 import com.darkmagician6.eventapi.EventTarget;
 import net.minecraft.entity.Entity;
-import uwu.smsgamer.pasteclient.events.Render3DEvent;
+import uwu.smsgamer.pasteclient.events.*;
 import uwu.smsgamer.pasteclient.injection.interfaces.IMixinMouseHelper;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.*;
@@ -29,7 +29,7 @@ public class AimAssist extends Module {
     }
 
     @EventTarget
-    private void onRender(Render3DEvent event) {
+    private void onRender(MouseMoveEvent event) {
         if (!getState()) return;
         Entity target = null;
         double range = this.maxRange.getValue();
@@ -53,12 +53,17 @@ public class AimAssist extends Module {
             Rotation angleDiff = RotationUtil.rotationDiff(rotation, Rotation.player());
             IMixinMouseHelper mh = (IMixinMouseHelper) mc.mouseHelper;
             mh.setMode(3);
-            mh.setSideX(angleDiff.yaw < 0);
+            // TODO: 2020-11-30 Reversed motion thingy cool k.
+            mh.setSideX(angleDiff.yaw > 0);
             mh.setSideY(angleDiff.pitch < 0);
-            mh.setMultX(yawSpeed.getRandomValue());
-            mh.setMultY(pitchSpeed.getRandomValue());
-            mh.setDivX(yawSlow.getRandomValue());
-            mh.setDivY(pitchSlow.getRandomValue());
+            double ym = yawSpeed.getRandomValue();
+            double pm = pitchSpeed.getRandomValue();
+            double yd = yawSlow.getRandomValue();
+            double pd = pitchSlow.getRandomValue();
+            mh.setMultX(ym);
+            mh.setMultY(pm);
+            mh.setDivX(1/yd);
+            mh.setDivY(1/pd);
         } else ((IMixinMouseHelper) mc.mouseHelper).reset();
     }
 
