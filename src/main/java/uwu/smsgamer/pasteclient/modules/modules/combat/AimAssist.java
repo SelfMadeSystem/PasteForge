@@ -2,7 +2,7 @@ package uwu.smsgamer.pasteclient.modules.modules.combat;
 
 import com.darkmagician6.eventapi.EventTarget;
 import net.minecraft.entity.Entity;
-import uwu.smsgamer.pasteclient.events.*;
+import uwu.smsgamer.pasteclient.events.MouseMoveEvent;
 import uwu.smsgamer.pasteclient.injection.interfaces.IMixinMouseHelper;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.*;
@@ -53,17 +53,20 @@ public class AimAssist extends Module {
             Rotation angleDiff = RotationUtil.rotationDiff(rotation, Rotation.player());
             IMixinMouseHelper mh = (IMixinMouseHelper) mc.mouseHelper;
             mh.setMode(3);
-            // TODO: 2020-11-30 Reversed motion thingy cool k.
-            mh.setSideX(angleDiff.yaw > 0);
-            mh.setSideY(angleDiff.pitch < 0);
+            if (Math.abs(angleDiff.yaw) > 0.1)
+                mh.setSideX(angleDiff.yaw > 0 != mc.gameSettings.invertMouse ? 1 : -1);
+            else mh.setSideX(0);
+            if (Math.abs(angleDiff.pitch) > 0.1)
+                mh.setSideY(angleDiff.pitch < 0 ? 1 : -1);
+            else mh.setSideY(0);
             double ym = yawSpeed.getRandomValue();
             double pm = pitchSpeed.getRandomValue();
             double yd = yawSlow.getRandomValue();
             double pd = pitchSlow.getRandomValue();
             mh.setMultX(ym);
             mh.setMultY(pm);
-            mh.setDivX(1/yd);
-            mh.setDivY(1/pd);
+            mh.setDivX(1 / yd);
+            mh.setDivY(1 / pd);
         } else ((IMixinMouseHelper) mc.mouseHelper).reset();
     }
 

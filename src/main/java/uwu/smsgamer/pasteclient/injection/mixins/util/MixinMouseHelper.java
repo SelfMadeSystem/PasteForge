@@ -13,7 +13,7 @@ public class MixinMouseHelper implements IMixinMouseHelper {
     @Shadow
     public int deltaX, deltaY;
     public int mode;
-    public boolean sideX, sideY;
+    public int sideX, sideY;
     public int x, y;
     public int addX, addY;
     public double multX, divX, multY, divY;
@@ -43,10 +43,14 @@ public class MixinMouseHelper implements IMixinMouseHelper {
                 int nX = dX;
                 int nY = dY;
 
-                if (dX > 0 == sideX) nX *= multX;
-                else nX /= divX;
-                if (dY > 0 == sideY) nY *= multY;
-                else nY /= divY;
+                if (sideX != 0) {
+                    if (dX > 0 == sideX > 0) nX *= multX;
+                    else nX /= divX;
+                }
+                if (sideY != 0) {
+                    if (dY > 0 == sideY > 0) nY *= multY;
+                    else nY /= divY;
+                }
 
                 deltaX = nX;
                 deltaY = nY;
@@ -65,13 +69,13 @@ public class MixinMouseHelper implements IMixinMouseHelper {
     }
 
     @Override
-    public void setSideX(boolean plus) {
-        this.sideX = plus;
+    public void setSideX(int side) {
+        this.sideX = side;
     }
 
     @Override
-    public void setSideY(boolean plus) {
-        this.sideY = plus;
+    public void setSideY(int side) {
+        this.sideY = side;
     }
 
     @Override

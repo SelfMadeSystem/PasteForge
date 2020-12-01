@@ -9,8 +9,8 @@ public interface IMixinMouseHelper {
 
     void reset();
 
-    void setSideX(boolean plus);
-    void setSideY(boolean plus);
+    void setSideX(int side);
+    void setSideY(int side);
 
     void setX(int amount);
     void setY(int amount);
