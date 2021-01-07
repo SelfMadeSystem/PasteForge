@@ -1,7 +1,6 @@
 package uwu.smsgamer.pasteclient.modules.modules.misc;
 
 import com.darkmagician6.eventapi.EventTarget;
-import com.google.gson.*;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.util.EnumHand;
@@ -12,7 +11,7 @@ import uwu.smsgamer.pasteclient.values.*;
 
 import java.lang.reflect.*;
 
-public class Disabler extends Module {
+public class Disabler extends PasteModule {
     public IntChoiceValue mode = addIntChoice("Mode", "The mode of the disabler.", 0,
       0, "PacketDetect",
       1, "Timing");

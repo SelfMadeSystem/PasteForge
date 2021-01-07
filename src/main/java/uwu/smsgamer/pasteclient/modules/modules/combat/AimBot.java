@@ -11,7 +11,7 @@ import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
 
-public class AimBot extends Module {
+public class AimBot extends PasteModule {
     public IntChoiceValue targetOrder = addIntChoice("TargetOrder      ->", "Which entities to target first.", 0,
       0, "Closest",
       1, "Lowest Health",

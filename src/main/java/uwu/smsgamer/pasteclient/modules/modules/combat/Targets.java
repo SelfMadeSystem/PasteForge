@@ -4,7 +4,7 @@ import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.TargetUtil;
 import uwu.smsgamer.pasteclient.values.VoidValue;
 
-public class Targets extends Module {
+public class Targets extends PasteModule {
     public Targets() {
         super("Targets", "Settings for targeting.", ModuleCategory.COMBAT);
         addValue(TargetUtil.players);

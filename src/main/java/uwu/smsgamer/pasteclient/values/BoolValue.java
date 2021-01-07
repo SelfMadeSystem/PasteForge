@@ -1,11 +1,6 @@
 package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
-import uwu.smsgamer.pasteclient.gui.clickgui.utils.Utils;
-import uwu.smsgamer.pasteclient.modules.Module;
-
-import java.util.Locale;
-import java.util.function.Function;
 
 public class BoolValue extends Value<Boolean> {
 

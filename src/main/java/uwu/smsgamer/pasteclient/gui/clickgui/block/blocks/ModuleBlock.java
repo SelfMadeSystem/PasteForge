@@ -2,14 +2,14 @@ package uwu.smsgamer.pasteclient.gui.clickgui.block.blocks;
 
 import uwu.smsgamer.pasteclient.gui.clickgui.block.*;
 import uwu.smsgamer.pasteclient.gui.clickgui.block.blockguis.*;
-import uwu.smsgamer.pasteclient.modules.Module;
+import uwu.smsgamer.pasteclient.modules.PasteModule;
 
 import java.awt.*;
 
 public class ModuleBlock extends BlockComponent {
-    public final Module module;
+    public final PasteModule module;
 
-    public ModuleBlock(ModuleGUI gui, Module module) {
+    public ModuleBlock(ModuleGUI gui, PasteModule module) {
         super(gui);
         this.module = module;
     }

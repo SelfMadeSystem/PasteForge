@@ -7,7 +7,7 @@ import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.MotionUtils;
 import uwu.smsgamer.pasteclient.values.*;
 
-public class Speed extends Module {
+public class Speed extends PasteModule {
     public static Speed instance;
 
     private final IntChoiceValue mode = addIntChoice("Mode", "Mode for speed", 0,

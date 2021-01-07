@@ -12,7 +12,7 @@ import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
 
-public class Tracers extends Module {
+public class Tracers extends PasteModule {
     public FancyColorValue color = (FancyColorValue) addValue(new FancyColorValue("Color", "Color for ESP.", Color.WHITE));
     public NumberValue lineWidth = (NumberValue) addValue(new NumberValue("LineWidth", "Width of the line.", 2, 0.1, 10, 0.1, NumberValue.NumberType.DECIMAL));
 

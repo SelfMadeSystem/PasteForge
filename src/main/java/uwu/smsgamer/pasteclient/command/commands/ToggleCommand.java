@@ -13,7 +13,7 @@ package uwu.smsgamer.pasteclient.command.commands;
 import uwu.smsgamer.pasteclient.PasteClient;
 import uwu.smsgamer.pasteclient.command.Command;
 import uwu.smsgamer.pasteclient.command.CommandException;
-import uwu.smsgamer.pasteclient.modules.Module;
+import uwu.smsgamer.pasteclient.modules.PasteModule;
 import uwu.smsgamer.pasteclient.utils.ChatUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,7 @@ public class ToggleCommand extends Command {
         if (args.length < 1) {
             throw new CommandException("Usage: ." + alias + " <module> [<on/off>]");
         }
-        Module mod = PasteClient.INSTANCE.moduleManager.getModule(args[0], false);
+        PasteModule mod = PasteClient.INSTANCE.moduleManager.getModule(args[0], false);
 
         if (mod == null) throw new CommandException("The module '" + args[0] + "' does not exist");
 
@@ -63,7 +63,7 @@ public class ToggleCommand extends Command {
 
         if (flag) {
             String finalPrefix = prefix;
-            return PasteClient.INSTANCE.moduleManager.getModules().stream().filter(mod -> mod.getName().toLowerCase().startsWith(finalPrefix)).map(Module::getName).collect(Collectors.toList());
+            return PasteClient.INSTANCE.moduleManager.getModules().stream().filter(mod -> mod.getName().toLowerCase().startsWith(finalPrefix)).map(PasteModule::getName).collect(Collectors.toList());
         } else return new ArrayList<>();
     }
 }

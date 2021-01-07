@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import uwu.smsgamer.pasteclient.PasteClient;
-import uwu.smsgamer.pasteclient.modules.Module;
+import uwu.smsgamer.pasteclient.modules.PasteModule;
 import uwu.smsgamer.pasteclient.values.Value;
 
 import java.io.*;
@@ -58,7 +58,7 @@ public class FileManager {
         {
             JsonObject modules = new JsonObject();
 
-            for (Module module : PasteClient.INSTANCE.moduleManager.getModules()) {
+            for (PasteModule module : PasteClient.INSTANCE.moduleManager.getModules()) {
                 JsonObject moduleObject = new JsonObject();
 
                 moduleObject.addProperty("state", module.getState());
@@ -72,7 +72,7 @@ public class FileManager {
         {
             JsonObject values = new JsonObject();
 
-            for (Module module : PasteClient.INSTANCE.moduleManager.getModules()) {
+            for (PasteModule module : PasteClient.INSTANCE.moduleManager.getModules()) {
                 JsonObject json = new JsonObject();
                 for (Value<?> value : module.getValues().values()) {
                     json.add(value.getName(), value.toJSON().get(value.getName()));
@@ -131,7 +131,7 @@ public class FileManager {
                 JsonObject modules = (JsonObject) modulesElement;
 
                 for (Map.Entry<String, JsonElement> stringJsonElementEntry : modules.entrySet()) {
-                    Module module = PasteClient.INSTANCE.moduleManager.getModule(stringJsonElementEntry.getKey(), true);
+                    PasteModule module = PasteClient.INSTANCE.moduleManager.getModule(stringJsonElementEntry.getKey(), true);
 
                     if (module == null) {
                         backupReasons.add("Module '" + stringJsonElementEntry.getKey() + "' doesn't exist");
@@ -170,7 +170,7 @@ public class FileManager {
 
             if (valuesElement instanceof JsonObject) {
                 for (Map.Entry<String, JsonElement> stringJsonElementEntry : ((JsonObject) valuesElement).entrySet()) {
-                    Module module = PasteClient.INSTANCE.moduleManager.getModule(stringJsonElementEntry.getKey(), false);
+                    PasteModule module = PasteClient.INSTANCE.moduleManager.getModule(stringJsonElementEntry.getKey(), false);
 
                     if (module == null) {
                         backupReasons.add("Module '" + stringJsonElementEntry.getKey() + "' doesn't exist");

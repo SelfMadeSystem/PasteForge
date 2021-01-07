@@ -10,10 +10,10 @@
 
 package uwu.smsgamer.pasteclient.modules.modules.fun;
 
-import uwu.smsgamer.pasteclient.modules.Module;
+import uwu.smsgamer.pasteclient.modules.PasteModule;
 import uwu.smsgamer.pasteclient.modules.ModuleCategory;
 
-public class DemoModeModule extends Module {
+public class DemoModeModule extends PasteModule {
     public DemoModeModule() {
         super("DemoMode", "Enables the Demo mode", ModuleCategory.FUN);
     }

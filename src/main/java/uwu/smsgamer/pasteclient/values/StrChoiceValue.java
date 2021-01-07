@@ -1,7 +1,6 @@
 package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
-import uwu.smsgamer.pasteclient.modules.Module;
 import uwu.smsgamer.pasteclient.utils.StringHashMap;
 
 public class StrChoiceValue extends ChoiceValue<String> {

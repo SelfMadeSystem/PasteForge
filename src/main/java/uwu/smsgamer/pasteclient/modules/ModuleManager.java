@@ -25,10 +25,10 @@ import java.util.*;
 public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
 
     @NotNull
-    private final List<Module> modules = new ArrayList<>();
+    private final List<PasteModule> modules = new ArrayList<>();
 
     @NotNull
-    private final EnumMap<ModuleCategory, List<Module>> categoryModuleMap = new EnumMap<>(ModuleCategory.class);
+    private final EnumMap<ModuleCategory, List<PasteModule>> categoryModuleMap = new EnumMap<>(ModuleCategory.class);
 
     public ModuleManager() {
         for (ModuleCategory value : ModuleCategory.values()) {
@@ -64,7 +64,7 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
         addModule(new Tracers());
     }
 
-    private void addModule(@NotNull Module module) {
+    private void addModule(@NotNull PasteModule module) {
         modules.add(module);
         categoryModuleMap.get(module.getCategory()).add(module);
         EventManager.register(module);
@@ -72,27 +72,27 @@ public class ModuleManager { //todo: THIS NEEDS TO BE REWORKED
     }
 
     @NotNull
-    public List<Module> getModules() {
+    public List<PasteModule> getModules() {
         return modules;
     }
 
     @SuppressWarnings("unchecked")
     @NotNull
-    public <T extends Module> T getModule(Class<T> clazz) {
+    public <T extends PasteModule> T getModule(Class<T> clazz) {
         return (T) Objects.requireNonNull(modules.stream().filter(mod -> mod.getClass() == clazz).findFirst().orElse(null));
     }
 
-    public Module getModule(@NotNull String name, boolean caseSensitive) {
+    public PasteModule getModule(@NotNull String name, boolean caseSensitive) {
         return modules.stream().filter(mod -> !caseSensitive && name.equalsIgnoreCase(mod.getName()) || name.equals(mod.getName())).findFirst().orElse(null);
     }
 
-    public List<Module> getModules(@NotNull ModuleCategory category) {
+    public List<PasteModule> getModules(@NotNull ModuleCategory category) {
         return categoryModuleMap.get(category);
     }
 
     @EventTarget
     private void onKey(@NotNull KeyEvent event) {
-        for (Module module : modules) if (module.getKeybind() == event.getKey()) module.setState(!module.getState());
+        for (PasteModule module : modules) if (module.getKeybind() == event.getKey()) module.setState(!module.getState());
     }
 
     /*public void addScriptModule(ScriptModule module) {

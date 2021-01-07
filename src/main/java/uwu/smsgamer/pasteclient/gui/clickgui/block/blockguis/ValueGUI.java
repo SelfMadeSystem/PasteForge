@@ -3,16 +3,16 @@ package uwu.smsgamer.pasteclient.gui.clickgui.block.blockguis;
 import uwu.smsgamer.pasteclient.gui.clickgui.block.BlockGUI;
 import uwu.smsgamer.pasteclient.gui.clickgui.block.blocks.BackBlock;
 import uwu.smsgamer.pasteclient.gui.clickgui.block.blocks.values.*;
-import uwu.smsgamer.pasteclient.modules.Module;
+import uwu.smsgamer.pasteclient.modules.PasteModule;
 import uwu.smsgamer.pasteclient.values.*;
 
 import java.util.Collection;
 
 public class ValueGUI extends BlockGUI {
-    public final Module module;
+    public final PasteModule module;
     public final Value<?> val;
 
-    public ValueGUI(BlockGUI parent, Module module) {
+    public ValueGUI(BlockGUI parent, PasteModule module) {
         super(parent);
         this.module = module;
         this.val = null;

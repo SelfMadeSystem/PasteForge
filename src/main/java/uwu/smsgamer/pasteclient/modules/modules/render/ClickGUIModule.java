@@ -16,7 +16,7 @@ import uwu.smsgamer.pasteclient.gui.clickgui.block.*;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.values.*;
 
-public class ClickGUIModule extends Module {
+public class ClickGUIModule extends PasteModule {
     public static final ClickGUI clickGui = new ClickGUI();
     public VoidValue colors = (VoidValue) addValue(new VoidValue("Colors", "Change colors for the click gui."));
     public VoidValue values = (VoidValue) addValue(new VoidValue("Values", "Change values for the click gui."));

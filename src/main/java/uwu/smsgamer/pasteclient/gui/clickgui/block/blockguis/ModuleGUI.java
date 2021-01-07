@@ -11,7 +11,7 @@ public class ModuleGUI extends BlockGUI {
     public ModuleGUI(BlockGUI parent, ModuleCategory category) {
         super(parent);
         this.category = category;
-        for (Module module : PasteClient.INSTANCE.moduleManager.getModules(category)) {
+        for (PasteModule module : PasteClient.INSTANCE.moduleManager.getModules(category)) {
             components.add(new ModuleBlock(this, module));
         }
         components.add(new BackBlock(this));
@@ -20,7 +20,7 @@ public class ModuleGUI extends BlockGUI {
     @Override
     public void reload() {
         components.clear();
-        for (Module module : PasteClient.INSTANCE.moduleManager.getModules(category)) {
+        for (PasteModule module : PasteClient.INSTANCE.moduleManager.getModules(category)) {
             components.add(new ModuleBlock(this, module));
         }
         components.add(new BackBlock(this));

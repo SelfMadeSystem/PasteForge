@@ -3,13 +3,13 @@ package uwu.smsgamer.pasteclient.values;
 import com.google.gson.*;
 import org.apache.logging.log4j.*;
 import org.jetbrains.annotations.NotNull;
-import uwu.smsgamer.pasteclient.modules.Module;
+import uwu.smsgamer.pasteclient.modules.PasteModule;
 
 import java.util.*;
 
 // Ch
 public abstract class Value<T> {
-    public Module module;
+    public PasteModule module;
     protected String name;
     protected String description;
     protected T value;

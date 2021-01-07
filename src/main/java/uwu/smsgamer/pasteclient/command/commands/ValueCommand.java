@@ -13,7 +13,7 @@ package uwu.smsgamer.pasteclient.command.commands;
 import org.jetbrains.annotations.NotNull;
 import uwu.smsgamer.pasteclient.PasteClient;
 import uwu.smsgamer.pasteclient.command.*;
-import uwu.smsgamer.pasteclient.modules.Module;
+import uwu.smsgamer.pasteclient.modules.PasteModule;
 import uwu.smsgamer.pasteclient.utils.ChatUtils;
 import uwu.smsgamer.pasteclient.values.*;
 
@@ -31,7 +31,7 @@ public class ValueCommand extends Command {
 
         Value<?> value;
         {
-            Module module = PasteClient.INSTANCE.moduleManager.getModule(args[0], false);
+            PasteModule module = PasteClient.INSTANCE.moduleManager.getModule(args[0], false);
             if (module == null) throw new CommandException("Module: " + args[0] + " does not exist!");
             value = module.getValue(args[1]);
             if (value == null) throw new CommandException("Value: " + args[1] + " does not exist!");

@@ -18,7 +18,7 @@ import uwu.smsgamer.pasteclient.values.*;
 
 import java.util.*;
 
-public abstract class Module { //TODO: ALSO NEED TO BE REDONE
+public abstract class PasteModule { //TODO: ALSO NEED TO BE REDONE
     protected static final Minecraft mc = Minecraft.getMinecraft();
     protected String name;
     protected String description;
@@ -30,11 +30,11 @@ public abstract class Module { //TODO: ALSO NEED TO BE REDONE
 
     protected LinkedHashMap<String, Value<?>> values = new LinkedHashMap<>();
 
-    protected Module(String name, String description, ModuleCategory moduleCategory) {
+    protected PasteModule(String name, String description, ModuleCategory moduleCategory) {
         this(name, description, moduleCategory, true, false, Keyboard.KEY_NONE);
     }
 
-    protected Module(String name, String description, ModuleCategory category, boolean canBeEnabled, boolean hidden, int keybind) {
+    protected PasteModule(String name, String description, ModuleCategory category, boolean canBeEnabled, boolean hidden, int keybind) {
         this.name = name;
         this.description = description;
         this.category = category;

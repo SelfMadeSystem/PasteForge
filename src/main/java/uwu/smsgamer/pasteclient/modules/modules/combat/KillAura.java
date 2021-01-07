@@ -16,7 +16,7 @@ import uwu.smsgamer.pasteclient.values.*;
 import java.awt.*;
 import java.util.List;
 
-public class KillAura extends Module {
+public class KillAura extends PasteModule {
 
     public IntChoiceValue targetOrder = addIntChoice("TargetOrder      ->", "Which entities to target first.", 0,
       0, "Closest",

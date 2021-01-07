@@ -18,7 +18,7 @@ import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.notifications.*;
 import uwu.smsgamer.pasteclient.values.BoolValue;
 
-public class SetbackDetector extends Module {
+public class SetbackDetector extends PasteModule {
     private final BoolValue disableModules = addBool("Disable Modules",
       "Whether or not to disable movement modules when getting flagged", true);
 

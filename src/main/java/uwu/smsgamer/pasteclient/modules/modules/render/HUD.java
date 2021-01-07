@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HUD extends Module {
+public class HUD extends PasteModule {
     @NotNull
-    private TabGui<Module> tabGui = new TabGui<>();
+    private TabGui<PasteModule> tabGui = new TabGui<>();
     @NotNull
     private List<Integer> fps = new ArrayList<>();
 
@@ -48,9 +48,9 @@ public class HUD extends Module {
         setState(true);
 
 
-        HashMap<ModuleCategory, java.util.List<Module>> moduleCategoryMap = new HashMap<>();
+        HashMap<ModuleCategory, java.util.List<PasteModule>> moduleCategoryMap = new HashMap<>();
 
-        for (Module module : PasteClient.INSTANCE.moduleManager.getModules()) {
+        for (PasteModule module : PasteClient.INSTANCE.moduleManager.getModules()) {
             if (!moduleCategoryMap.containsKey(module.getCategory())) {
                 moduleCategoryMap.put(module.getCategory(), new ArrayList<>());
             }
@@ -59,9 +59,9 @@ public class HUD extends Module {
         }
 
         moduleCategoryMap.entrySet().stream().sorted(Comparator.comparingInt(cat -> cat.getKey().toString().hashCode())).forEach(cat -> {
-            Tab<Module> tab = new Tab<>(cat.getKey().toString());
+            Tab<PasteModule> tab = new Tab<>(cat.getKey().toString());
 
-            for (Module module : cat.getValue()) {
+            for (PasteModule module : cat.getValue()) {
                 tab.addSubTab(new SubTab<>(module.getName(), subTab -> subTab.getObject().setState(!subTab.getObject().getState()), module));
             }
 

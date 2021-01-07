@@ -10,7 +10,7 @@ import uwu.smsgamer.pasteclient.values.*;
 
 import java.lang.reflect.Field;
 
-public class Fly extends Module {
+public class Fly extends PasteModule {
     private final IntChoiceValue mode = addIntChoice("Mode", "Mode for fly", 0,
       0, "Vanilla",
       1, "Float",

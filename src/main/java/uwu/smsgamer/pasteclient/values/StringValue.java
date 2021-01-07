@@ -1,7 +1,6 @@
 package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
-import uwu.smsgamer.pasteclient.modules.Module;
 
 public class StringValue extends Value<String> {
 

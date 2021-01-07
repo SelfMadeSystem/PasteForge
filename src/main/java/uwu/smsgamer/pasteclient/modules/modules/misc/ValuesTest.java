@@ -8,7 +8,7 @@ import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
 
-public class ValuesTest extends Module {
+public class ValuesTest extends PasteModule {
     public BoolValue boolVal = addBool("BoolVal", "Boolean Value", true);
     public BoolValue boolVal1 = addBool("BoolVal1", "Boolean Value", false);
     public NumberValue deciVal = addDeci("DeciVal", "Decimal Value", 4, 0.0, 5, 0.1);

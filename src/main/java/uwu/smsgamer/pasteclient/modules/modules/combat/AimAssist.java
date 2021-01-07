@@ -8,7 +8,7 @@ import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
 
-public class AimAssist extends Module {
+public class AimAssist extends PasteModule {
     public IntChoiceValue targetOrder = addIntChoice("TargetOrder      ->", "Which entities to target first.", 0,
       0, "Closest",
       1, "Lowest Health",
