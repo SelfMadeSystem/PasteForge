@@ -2,10 +2,3 @@ language: java
 sudo: false
 install: chmod +x gradlew
 script: ./gradlew clean setupCiWorkspace build
-deploy:
-  provider: releases
-  api_key: <token>
-  file: "./build/libs/PasteClient-v0.1.jar"
-  skip_cleanup: true
-  on:
-    tags: true
