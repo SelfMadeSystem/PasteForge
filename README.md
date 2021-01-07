@@ -1,9 +1,8 @@
-# ClientBase [![Build Status](https://travis-ci.org/superblaubeere27/ClientBase.svg?branch=master)](https://travis-ci.org/superblaubeere27/ClientBase)
+# PasteForge [![Build Status](https://travis-ci.com/True-cc/PasteForge.svg?branch=master)](https://travis-ci.com/github/True-cc/PasteForge)
 ## Licensing
-You can use the Base under MIT License or you can **donate to me** (doesn't have to be a subscription)
-and use it under Unlicense (https://choosealicense.com/licenses/unlicense/)
-## Donations
-Patreon: https://www.patreon.com/superblaubeere27
+PasteForge is licensed under the GPL-3.0 license.
 ## Credits
+- LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+- ClientBase: The base of the client (https://github.com/superblaubeere27/ClientBase)
 - EventAPI: Darkmagican8 (https://bitbucket.org/DarkMagician6/eventapi)
 - Some parts of the injection classes + gradle files + ClickGUI: LiquidBase by CCBlueX (https://git.liquidbounce.net/CCBlueX/LiquidBase/)
