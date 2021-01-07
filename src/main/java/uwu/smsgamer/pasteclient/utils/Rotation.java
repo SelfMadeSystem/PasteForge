@@ -26,12 +26,16 @@ public class Rotation {
         player.rotationPitch = pitch;
     }
 
+    public double getDiffS(Rotation rotation) {
+        return RotationUtil.angleDiff(rotation.yaw, yaw) + RotationUtil.angleDiff(rotation.pitch, pitch);
+    }
+
     public double playerYawDiff() {
-        return RotationUtil.angleDiff(Minecraft.getMinecraft().player.rotationYaw, yaw.floatValue());
+        return RotationUtil.angleDiff(Minecraft.getMinecraft().player.rotationYaw, yaw);
     }
 
     public double playerPitchDiff() {
-        return RotationUtil.angleDiff(Minecraft.getMinecraft().player.rotationPitch, pitch.floatValue());
+        return RotationUtil.angleDiff(Minecraft.getMinecraft().player.rotationPitch, pitch);
     }
 
     public int pitchToMouse() {

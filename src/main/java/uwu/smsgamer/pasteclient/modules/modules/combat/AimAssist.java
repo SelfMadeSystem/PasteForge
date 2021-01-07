@@ -9,7 +9,7 @@ import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
 
 public class AimAssist extends Module {
-    public IntChoiceValue targetMode = addIntChoice("TargetMode      ->", "Which entities to target first.", 0,
+    public IntChoiceValue targetOrder = addIntChoice("TargetOrder      ->", "Which entities to target first.", 0,
       0, "Closest",
       1, "Lowest Health",
       2, "Least Angle");
@@ -24,8 +24,8 @@ public class AimAssist extends Module {
 
     public AimAssist() {
         super("AimAssist", "Helps you aims at entities", ModuleCategory.COMBAT);
-        targetMode.addChild(maxRange = genDeci("MaxRange", "Maximum distance the entity has to be in blocks.", 6, 2, 16, 0.5));
-        targetMode.addChild(maxAngle = genInt("MaxAngle", "Maximum angle the entity has to be in degrees.", 180, 0, 180));
+        targetOrder.addChild(maxRange = genDeci("MaxRange", "Maximum distance the entity has to be in blocks.", 6, 2, 16, 0.5));
+        targetOrder.addChild(maxAngle = genInt("MaxAngle", "Maximum angle the entity has to be in degrees.", 180, 0, 180));
     }
 
     @EventTarget
@@ -34,7 +34,7 @@ public class AimAssist extends Module {
         Entity target = null;
         double range = this.maxRange.getValue();
         double angle = this.maxAngle.getValue();
-        switch (targetMode.getValue()) {
+        switch (targetOrder.getValue()) {
             case 0:
                 target = TargetUtil.getClosestEntity(range, angle);
                 break;

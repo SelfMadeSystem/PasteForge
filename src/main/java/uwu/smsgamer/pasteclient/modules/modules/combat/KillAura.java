@@ -14,13 +14,18 @@ import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
+import java.util.List;
 
 public class KillAura extends Module {
 
-    public IntChoiceValue targetMode = addIntChoice("TargetMode      ->", "Which entities to target first.", 0,
+    public IntChoiceValue targetOrder = addIntChoice("TargetOrder      ->", "Which entities to target first.", 0,
       0, "Closest",
       1, "Lowest Health",
       2, "Least Angle");
+    public IntChoiceValue targetMode = addIntChoice("TargetMode", "How to target entities.", 0,
+      0, "Single",
+      1, "Constant",
+      2, "Switch");
     public IntChoiceValue aimMode = addIntChoice("AimMode", "How to aim at entities.", 0,
       0, "Normal",
       1, "GCD Patch");
@@ -50,16 +55,18 @@ public class KillAura extends Module {
         public boolean isVisible() {
             return mark.getValue();
         }
-    });public NumberValue maxRange;
+    });
+    public NumberValue maxRange;
     public NumberValue maxAngle;
     public BoolValue cooldown = (BoolValue) addValue(new BoolValue("Cooldown", "Uses item cooldown instead of CPS.", false));
     public NumberValue minCPS = (NumberValue) addValue(new NumberValue("MinCPS", "Minimum CPS.", 9, 0, 20, 1, NumberValue.NumberType.INTEGER));
     public NumberValue maxCPS = (NumberValue) addValue(new NumberValue("MaxCPS", "Maximum CPS.", 13, 0, 20, 1, NumberValue.NumberType.INTEGER));
     public NumberValue reach = (NumberValue) addValue(new NumberValue("Reach", "Reach for hitting entity.", 3, 0, 8, 0.025, NumberValue.NumberType.DECIMAL));
+
     public KillAura() {
         super("KillAura", "Automatically attacks stuff around you.", ModuleCategory.COMBAT);
-        targetMode.addChild(maxRange = genDeci("MaxRange", "Maximum distance the entity has to be in blocks.", 6, 2, 16, 0.5));
-        targetMode.addChild(maxAngle = genInt("MaxAngle", "Maximum angle the entity has to be in degrees.", 180, 0, 180));
+        targetOrder.addChild(maxRange = genDeci("MaxRange", "Maximum distance the entity has to be in blocks.", 6, 2, 16, 0.5));
+        targetOrder.addChild(maxAngle = genInt("MaxAngle", "Maximum angle the entity has to be in degrees.", 180, 0, 180));
     }
 
     public float yaw;
@@ -67,6 +74,8 @@ public class KillAura extends Module {
     public float prevYaw;
     public float prevPitch;
     public Entity lastTarget;
+    public Rotation startAngle;
+    public int switchCount;
 
     @Override
     protected void onEnable() {
@@ -75,6 +84,7 @@ public class KillAura extends Module {
             prevPitch = mc.player.prevRotationPitch;
             yaw = mc.player.rotationYaw;
             pitch = mc.player.rotationPitch;
+            startAngle = Rotation.player();
         }
     }
 
@@ -85,18 +95,40 @@ public class KillAura extends Module {
         double range = this.maxRange.getValue();
         double angle = this.maxAngle.getValue();
         double aimLimit = this.aimLimit.getValue() + (Math.random() * aimLimitVary.getValue() - aimLimitVary.getValue() / 2);
-        switch (targetMode.getValue()) {
-            case 0:
-                target = TargetUtil.getClosestEntity(range, angle);
-                break;
-            case 1:
-                target = TargetUtil.getLowestHealthEntity(range, angle);
-                break;
-            case 2:
-                target = TargetUtil.getLowestAngleEntity(range, angle);
-                break;
-        }
-        lastTarget = target;
+
+        if (targetMode.getValue() == 2) {
+            List<Entity> entities = TargetUtil.getEntities(range, angle);
+
+            if (entities.size() > 0)
+              
+                switch (targetOrder.getValue()) {
+                    case 0:
+                        TargetUtil.sortEntitiesByDistance(entities);
+                        break;
+                    case 1:
+                        TargetUtil.sortEntitiesByHealth(entities);
+                        break;
+                    case 2:
+                        TargetUtil.sortEntitiesByAngle(entities, startAngle);
+                        break;
+                }
+
+            if (switchCount >= entities.size()) switchCount = 0;
+            if (entities.size() > 0) target = lastTarget = entities.get(switchCount);
+        } else if (targetMode.getValue() == 1 || !TargetUtil.isInRange(lastTarget, range, angle)) {
+            switch (targetOrder.getValue()) {
+                case 0:
+                    target = TargetUtil.getClosestEntity(range, angle);
+                    break;
+                case 1:
+                    target = TargetUtil.getLowestHealthEntity(range, angle);
+                    break;
+                case 2:
+                    target = TargetUtil.getLowestAngleEntity(range, angle);
+                    break;
+            }
+            lastTarget = target;
+        } else target = lastTarget;
         if (target != null) {
             if (mark.getValue()) render(target);
             RotationUtil util = new RotationUtil(target, yaw, pitch);
@@ -173,13 +205,14 @@ public class KillAura extends Module {
             mc.player.prevRotationYaw = pRY;
             mc.player.prevRotationPitch = pRP;
             if (result.entityHit != null) {
+                if (targetMode.getValue() == 2) switchCount++;
                 mc.playerController.attackEntity(mc.player, result.entityHit);
             } else if (result.typeOfHit.equals(RayTraceResult.Type.BLOCK)) {
                 mc.playerController.clickBlock(result.getBlockPos(), result.sideHit);
             }
             double min = minCPS.getValue();
             double max = maxCPS.getValue();
-            nextAttack = (int) (Math.random() * (max-min) + min);
+            nextAttack = (int) (Math.random() * (max - min) + min);
             lastAttack = 0;
             mc.player.swingArm(EnumHand.MAIN_HAND);
         }

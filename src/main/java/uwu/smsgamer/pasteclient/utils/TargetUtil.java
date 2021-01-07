@@ -8,6 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import uwu.smsgamer.pasteclient.values.*;
 
+import java.util.*;
+
 public class TargetUtil {
     private final static Minecraft mc = Minecraft.getMinecraft();
 
@@ -101,5 +103,50 @@ public class TargetUtil {
             }
         }
         return returnEntity;
+    }
+
+    public static List<Entity> getEntities(double maxRange, double maxAngle) {
+        List<Entity> entities = new ArrayList<>();;
+        for (Entity entity : mc.world.loadedEntityList) {
+            if (!isValid(entity)) continue;
+            double dist = entity.getDistance(mc.player);
+            double angle = Math.abs(new RotationUtil(entity).getRotation().playerYawDiff());
+            if (dist < maxRange && angle <= maxAngle) {
+                entities.add(entity);
+            }
+        }
+        return entities;
+    }
+
+    public static List<Entity> sortEntitiesByDistance(List<Entity> entities) {
+        entities.sort((o1, o2) -> {
+            float f = o1.getDistance(mc.player) - o2.getDistance(mc.player);
+            return f == 0 ? 0 : f < 0 ? -1 : 1;
+        });
+        return entities;
+    }
+
+    public static List<Entity> sortEntitiesByHealth(List<Entity> entities) {
+        entities.sort((o1, o2) -> {
+            float f = ((EntityLivingBase) o1).getHealth() - ((EntityLivingBase) o2).getHealth();
+            return f == 0 ? 0 : f < 0 ? -1 : 1;
+        });
+        return entities;
+    }
+
+    public static List<Entity> sortEntitiesByAngle(List<Entity> entities, Rotation rotation) {
+        entities.sort((o1, o2) -> {
+            double d = Math.abs(new RotationUtil(o1).getRotation().getDiffS(rotation)) -
+              Math.abs(new RotationUtil(o2).getRotation().getDiffS(rotation));
+            return d == 0 ? 0 : d < 0 ? -1 : 1;
+        });
+        return entities;
+    }
+
+    public static boolean isInRange(Entity entity, double maxRange, double maxAngle){
+        if (entity == null) return false;
+        double dist = entity.getDistance(mc.player);
+        double angle = Math.abs(new RotationUtil(entity).getRotation().playerYawDiff());
+        return dist < maxRange && angle < maxAngle;
     }
 }
