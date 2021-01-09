@@ -189,6 +189,7 @@ public class FileManager {
                             try {
                                 value.fromJSON(valueObject);
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 backupReasons.add("Error while applying 'values/" + stringJsonElementEntry.getKey() + "' " + e.toString());
                             }
                         } else {

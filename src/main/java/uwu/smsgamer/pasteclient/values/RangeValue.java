@@ -97,15 +97,17 @@ public class RangeValue extends Value<Pair<Double, Double>> { // FIXME: 2020-11-
 
     @Override
     public JsonElement toElement() {
+        JsonObject o = new JsonObject();
         JsonObject object = new JsonObject();
         object.add("a", new JsonPrimitive(value.a));
         object.add("b", new JsonPrimitive(value.b));
-        return object;
+        o.add("__value__", object);
+        return o;
     }
 
     @Override
     public void fromElement(JsonElement ele) {
-        JsonObject object = (JsonObject) ele;
+        JsonObject object = ele.getAsJsonObject();
         value.a = object.get("a").getAsDouble();
         value.b = object.get("b").getAsDouble();
     }

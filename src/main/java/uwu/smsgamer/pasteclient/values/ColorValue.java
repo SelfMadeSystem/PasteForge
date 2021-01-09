@@ -77,18 +77,21 @@ public class ColorValue extends Value<Color> {
 
     @Override
     public JsonElement toElement() {
+        JsonObject o = new JsonObject();
         JsonObject object = new JsonObject();
         object.add("r", new JsonPrimitive(this.rgb.r));
         object.add("g", new JsonPrimitive(this.rgb.g));
         object.add("b", new JsonPrimitive(this.rgb.b));
         object.add("a", new JsonPrimitive(this.alpha));
         // Wow. I can't believe that this formatting is perfect.
-        return object;
+        o.add("__value__", object);
+        return o;
     }
 
     @Override
     public void fromElement(JsonElement ele) {
-        JsonObject object = (JsonObject) ele;
+        JsonObject object = ele.getAsJsonObject();
+        if (object.has("__value__")) object = object.get("__value__").getAsJsonObject(); // sloppy but works
         setRGB(new Colour.RGB(object.get("r").getAsDouble(), object.get("g").getAsDouble(), object.get("b").getAsDouble()));
         setAlpha(object.get("a").getAsDouble());
     }
