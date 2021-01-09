@@ -3,7 +3,7 @@ package uwu.smsgamer.pasteclient.gui.clickgui.block.blocks.values;
 import uwu.smsgamer.pasteclient.gui.clickgui.block.*;
 import uwu.smsgamer.pasteclient.gui.clickgui.block.blocks.ValueBlock;
 import uwu.smsgamer.pasteclient.gui.clickgui.utils.IRenderer;
-import uwu.smsgamer.pasteclient.values.*;
+import uwu.smsgamer.pasteclient.values.RangeValue;
 
 import java.awt.*;
 
@@ -24,9 +24,11 @@ public class RangeBlock extends ValueBlock {
           getWidth(), HEIGHT.getValue() / 4F, isSelected() ? BlockClickGUI.NUM_BG_SELECT.getColor() :
             canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.NUM_BG_HOVER.getColor() : BlockClickGUI.NUM_BG.getColor());
 
-        rdr.drawRect(x - getWidth() / 2F + getWidth() * value.getMinScaled(), y + (HEIGHT.getValue() / 4F),
-          getWidth() * value.getSizeScaled(), HEIGHT.getValue() / 4F, isSelected() ? BlockClickGUI.NUM_SLIDER_SELECT.getColor() :
-            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.NUM_SLIDER_HOVER.getColor() : BlockClickGUI.NUM_SLIDER.getColor());
+        rdr.drawRectR(x - getWidth() / 2F + getWidth() * value.getMinScaled(), y + (HEIGHT.getValue() / 4F),
+          x - getWidth() / 2F + getWidth() * value.getMaxScaled(),
+          y + (HEIGHT.getValue() / 4F) + HEIGHT.getValue() / 4F, isSelected() ? BlockClickGUI.NUM_SLIDER_SELECT.getColor() :
+            canSelect() && isHovering(mouseX, mouseY) ? BlockClickGUI.NUM_SLIDER_HOVER.getColor() :
+              BlockClickGUI.NUM_SLIDER.getColor());
 
         rdr.drawOutline(x - getWidth() / 2F - 2, y - (getHeight()) / 2F,
           getWidth() + 4, getHeight(), 2, Color.BLACK);

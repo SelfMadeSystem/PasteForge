@@ -17,6 +17,7 @@ public interface IRenderer {
     void setOpacity(double o);
 
     void drawRect(double x, double y, double w, double h, Color c);
+    void drawRectR(double x1, double y1, double x2, double y2, Color c);
 
     //r = round
     void drawRoundedRect(double x, double y, double w, double h, double r, Color c);

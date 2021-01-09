@@ -28,6 +28,11 @@ public class ClientBaseRendererImpl implements IRenderer {
     }
 
     @Override
+    public void drawRectR(double x1, double y1, double x2, double y2, Color c) {
+        GLUtil.drawRect(GL11.GL_QUADS, x1 / 2.0, y1 / 2.0, x2 / 2.0, y2 / 2.0, toRGBA(c));
+    }
+
+    @Override
     public void drawRoundedRect(double x, double y, double w, double h, double r, Color c) {
         y /= 2;
         x /= 2;
