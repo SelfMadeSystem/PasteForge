@@ -69,7 +69,7 @@ public abstract class MixinNetworkManager {
         }
     }
 
-    @Mixin(targets = "net.minecraft.network.MixinNetworkManager$InboundHandlerTuplePacketListener")
+    @Mixin(targets = "net.minecraft.network.NetworkManager$InboundHandlerTuplePacketListener")
     static class InboundHandlerTuplePacketListener {
         private final Packet<?> packet;
         private final GenericFutureListener<? extends Future<? super Void>>[] futureListeners;
