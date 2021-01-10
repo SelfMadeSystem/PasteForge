@@ -5,10 +5,8 @@ import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.network.play.client.CPacketPlayer;
 import uwu.smsgamer.pasteclient.events.*;
 import uwu.smsgamer.pasteclient.modules.*;
-import uwu.smsgamer.pasteclient.utils.MotionUtils;
+import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
-
-import java.lang.reflect.Field;
 
 public class Fly extends PasteModule {
     private final IntChoiceValue mode = addIntChoice("Mode", "Mode for fly", 0,
@@ -62,18 +60,10 @@ public class Fly extends PasteModule {
         if (event.getEventType().equals(EventType.SEND)) {
             if (event.getPacket() instanceof CPacketPlayer) {
                 CPacketPlayer packet = (CPacketPlayer) event.getPacket();
-                try {
-                    Field onGround = packet.getClass().getDeclaredField("onGround");
-                    onGround.setAccessible(true);
-                    if (groundSpoof.getValue()) {
-                        onGround.set(packet, true);
-                    } else if (groundNotSpoof.getValue()) {
-                        onGround.set(packet, false);
-                    }
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
-                    return;
-                }
+                PacketUtils.CPacketPlayerBuilder builder = new PacketUtils.CPacketPlayerBuilder(packet);
+                if (groundSpoof.getValue()) builder.setOnGround(true);
+                else if (groundNotSpoof.getValue()) builder.setOnGround(false);
+                event.setPacket(builder.build());
             }
         }
     }
