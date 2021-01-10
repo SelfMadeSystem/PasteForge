@@ -2,59 +2,166 @@ package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.MathHelper;
+import uwu.smsgamer.pasteclient.utils.*;
 
 public class PositionValue extends Value<Void> {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private boolean relativeX = false;
     private boolean relativeY = false;
     private boolean relativeZ = false;
+    private boolean relativeYaw = false;
+
     public PositionValue(String name, String description) {
         super(name, description, null);
-        addChild(new BoolValue("Relative", "Whether or not the position is relative to the player.", false));
-        addChild(new NumberValue("X", "Coordinates in X axis", 1d, 0d, 10-0.000001, 0.000001, NumberValue.NumberType.DECIMAL));
-        addChild(new NumberValue("XExp", "Exponent of X", 1, Double.MIN_EXPONENT, Double.MAX_EXPONENT, 1, NumberValue.NumberType.INTEGER));
-        addChild(new NumberValue("Y", "Coordinates in Y axis", 1d, 0d, 10-0.000001, 0.000001, NumberValue.NumberType.DECIMAL));
-        addChild(new NumberValue("YExp", "Exponent of Y", 1, Double.MIN_EXPONENT, Double.MAX_EXPONENT, 1, NumberValue.NumberType.INTEGER));
-        addChild(new NumberValue("Z", "Coordinates in Z axis", 1d, 0d, 10-0.000001, 0.000001, NumberValue.NumberType.DECIMAL));
-        addChild(new NumberValue("ZExp", "Exponent of Z", 1, Double.MIN_EXPONENT, Double.MAX_EXPONENT, 1, NumberValue.NumberType.INTEGER));
-        addChild(new BoolValue("XRelative", "Whether the X is relative to the player or not.", true));
-        addChild(new BoolValue("YRelative", "Whether the Y is relative to the player or not.", true));
-        addChild(new BoolValue("ZRelative", "Whether the Z is relative to the player or not.", true));
+        addXYZChildren();
+        addChild(new BoolValue("RelativeX", "Whether the X is relative to the player or not.", true));
+        addChild(new BoolValue("RelativeY", "Whether the Y is relative to the player or not.", true));
+        addChild(new BoolValue("RelativeZ", "Whether the Z is relative to the player or not.", true));
     }
 
+    // For SET relatives
+    public PositionValue(String name, String description, boolean relativeX, boolean relativeY, boolean relativeZ, int i) {
+        super(name, description, null);
+        addXYZChildren();
+        this.relativeX = relativeX;
+        this.relativeY = relativeY;
+        this.relativeZ = relativeZ;
+    }
+
+    // Defaults
     public PositionValue(String name, String description, boolean relativeX, boolean relativeY, boolean relativeZ) {
         super(name, description, null);
-        addChild(new BoolValue("Relative", "Whether or not the position is relative to the player.", false));
-        addChild(new NumberValue("X", "Coordinates in X axis", 1d, 0d, 10-0.000001, 0.000001, NumberValue.NumberType.DECIMAL));
-        addChild(new NumberValue("XExp", "Exponent of X", 1, Double.MIN_EXPONENT, Double.MAX_EXPONENT, 1, NumberValue.NumberType.INTEGER));
-        addChild(new NumberValue("Y", "Coordinates in Y axis", 1d, 0d, 10-0.000001, 0.000001, NumberValue.NumberType.DECIMAL));
-        addChild(new NumberValue("YExp", "Exponent of Y", 1, Double.MIN_EXPONENT, Double.MAX_EXPONENT, 1, NumberValue.NumberType.INTEGER));
-        addChild(new NumberValue("Z", "Coordinates in Z axis", 1d, 0d, 10-0.000001, 0.000001, NumberValue.NumberType.DECIMAL));
-        addChild(new NumberValue("ZExp", "Exponent of Z", 1, Double.MIN_EXPONENT, Double.MAX_EXPONENT, 1, NumberValue.NumberType.INTEGER));
-       this.relativeX = relativeX;
-       this.relativeY = relativeY;
-       this.relativeZ = relativeZ;
+        addXYZChildren();
+        addChild(new BoolValue("RelativeX", "Whether the X is relative to the player or not.", relativeX));
+        addChild(new BoolValue("RelativeY", "Whether the Y is relative to the player or not.", relativeY));
+        addChild(new BoolValue("RelativeZ", "Whether the Z is relative to the player or not.", relativeZ));
+        this.relativeX = relativeX;
+        this.relativeY = relativeY;
+        this.relativeZ = relativeZ;
     }
-    
+
+    // For Yaw
+    public PositionValue(String name, String description, boolean relativeYaw) {
+        super(name, description, null);
+        addXYZChildren();
+        BoolValue yawR = (BoolValue) addChild(new BoolValue("RelativeYaw", "Whether the position is relative to the player's yaw or not.", relativeYaw));
+        addChild(new BoolValue("RelativeX", "Whether the X is relative to the player or not.", relativeX) {
+            @Override
+            public boolean isVisible() {
+                return !yawR.getValue();
+            }
+        });
+        addChild(new BoolValue("RelativeY", "Whether the Y is relative to the player or not.", relativeY));
+        addChild(new BoolValue("RelativeZ", "Whether the Z is relative to the player or not.", relativeZ) {
+            @Override
+            public boolean isVisible() {
+                return !yawR.getValue();
+            }
+        });
+        this.relativeYaw = relativeYaw;
+    }
+
+    private void addXYZChildren() {
+        addChild(new NumberValue("X", "Coordinates in X axis", 1d, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL) {
+            @Override
+            public String getName() {
+                return isRelative("Yaw") ? "Forwards/Backwards" : "X";
+            }
+
+            @Override
+            public String getDescription() {
+                return isRelative("Yaw") ? "Coordinates based on yaw (forwards/backwards)" : "Coordinates in X axis";
+            }
+        });
+        addChild(new NumberValue("XExp", "Exponent of X", 1, -308, 308, 1, NumberValue.NumberType.INTEGER) {
+            @Override
+            public String getName() {
+                return isRelative("Yaw") ? "F/BExp" : "XExp";
+            }
+
+            @Override
+            public String getDescription() {
+                return isRelative("Yaw") ? "Exponent of the forwards/backwards" : "Exponent of X";
+            }
+        });
+        addChild(new NumberValue("Y", "Coordinates in Y axis", 1d, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL));
+        addChild(new NumberValue("YExp", "Exponent of Y", 1, -308, 308, 1, NumberValue.NumberType.INTEGER));
+        addChild(new NumberValue("Z", "Coordinates in Z axis", 1d, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL) {
+            @Override
+            public String getName() {
+                return isRelative("Yaw") ? "Left/Right" : "Z";
+            }
+
+            @Override
+            public String getDescription() {
+                return isRelative("Yaw") ? "Coordinates based on yaw (left/right)" : "Coordinates in Z axis";
+            }
+        });
+        addChild(new NumberValue("XExp", "Exponent of X", 1, -308, 308, 1, NumberValue.NumberType.INTEGER) {
+            @Override
+            public String getName() {
+                return isRelative("Yaw") ? "L/RExp" : "ZExp";
+            }
+
+            @Override
+            public String getDescription() {
+                return isRelative("Yaw") ? "Exponent of the left/right" : "Exponent of Z";
+            }
+        });
+    }
+
     public boolean isRelative(String s) {
-        if (hasChild("RelativeX"))
+        Value<?> val = getChild("Relative" + s);
+        if (val != null)
             return ((BoolValue) getChild("Relative" + s)).getValue();
-        if (s.toLowerCase().equals("x")) return relativeX;
-        if (s.toLowerCase().equals("y")) return relativeY;
-        if (s.toLowerCase().equals("z")) return relativeZ;
+
+        final String lower = s.toLowerCase();
+        if (lower.equals("x")) return relativeX;
+        if (lower.equals("y")) return relativeY;
+        if (lower.equals("z")) return relativeZ;
+        if (lower.equals("yaw")) return relativeYaw;
         return false;
     }
 
+    public double getPosX() {
+        if (isRelative("Yaw"))
+            return getX() + mc.player.posX;
+        return getX() + (isRelative("X") ? mc.player.posX : 0);
+    }
+
+    public double getPosY() {
+        return getY() + (isRelative("Y") ? mc.player.posY : 0);
+    }
+
+    public double getPosZ() {
+        if (isRelative("Yaw"))
+            return getZ() + mc.player.posZ;
+        return getZ() + (isRelative("Z") ? mc.player.posZ : 0);
+    }
+
     public double getX() {
-        return ((NumberValue) getChild("X")).getValue() * Math.pow(2, ((NumberValue) getChild("XExp")).getValue()) + (isRelative("X") ? mc.player.posX : 0);
+        double x = getPosExp('X');
+        if (isRelative("Yaw"))
+            return MathUtil.cos(mc.player.rotationYaw + 90) * x +
+              MathUtil.cos(mc.player.rotationYaw) * -getPosExp('Z');
+        return x;
     }
-    
+
     public double getY() {
-        return ((NumberValue) getChild("Y")).getValue() * Math.pow(2, ((NumberValue) getChild("YEYp")).getValue()) + (isRelative("Y") ? mc.player.posY : 0);
+        return getPosExp('Y');
     }
-    
+
     public double getZ() {
-        return ((NumberValue) getChild("Z")).getValue() * Math.pow(2, ((NumberValue) getChild("ZEZp")).getValue()) + (isRelative("Z") ? mc.player.posZ : 0);
+        double z = getPosExp('Z');
+        if (isRelative("Yaw"))
+            return MathUtil.sin(mc.player.rotationYaw + 90) * getPosExp('X') +
+              MathUtil.sin(mc.player.rotationYaw) * -z;
+        return z;
+    }
+
+    private double getPosExp(char c) {
+        return ((NumberValue) getChild(String.valueOf(c))).getValue() * Math.pow(10, ((NumberValue) getChild(c + "Exp")).getValue());
     }
 
     @Override

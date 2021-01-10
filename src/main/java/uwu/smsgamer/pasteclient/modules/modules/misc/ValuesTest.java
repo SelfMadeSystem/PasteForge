@@ -3,7 +3,6 @@ package uwu.smsgamer.pasteclient.modules.modules.misc;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import uwu.smsgamer.pasteclient.modules.*;
-import uwu.smsgamer.pasteclient.utils.ChatUtils;
 import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
@@ -35,9 +34,10 @@ public class ValuesTest extends PasteModule {
     public PacketValue packetValue = (PacketValue) addValue(new PacketValue("Packet", "Packet Value (:", CPacketPlayer.class));
     public PacketValue cPacketValue = (PacketValue) addValue(new PacketValue("CPacket", "Client Packet Value (:", CPacketPlayer.class, PacketValue.cPacketChoices));
     public PacketValue sPacketValue = (PacketValue) addValue(new PacketValue("SPacket", "Server Packet Value (:", SPacketPlayerPosLook.class, PacketValue.sPacketChoices));
-    public PositionValue positionValue = (PositionValue) addValue(new PositionValue("Position", "Position Value (:"));
     public ColorValue colorValue = (ColorValue) addValue(new ColorValue("Color", "Color Value", Color.RED));
     public FancyColorValue fancyColorValue = (FancyColorValue) addValue(new FancyColorValue("FancyColor", "Color Value", Color.BLUE));
+    public PositionValue positionValue = (PositionValue) addValue(new PositionValue("Position", "Position Value (:"));
+    public PositionValue positionValue1 = (PositionValue) addValue(new PositionValue("Position1", "Position Value (:", true));
 
     public ValuesTest() {
         super("ValuesTest", "Just testing values", ModuleCategory.MISC);
@@ -57,11 +57,16 @@ public class ValuesTest extends PasteModule {
 
     @Override
     protected void onEnable() {
-        ChatUtils.info(boolVal.getValStr() + ":" + boolVal1.getValStr() + ":" + boolVal.getChild("aye").getValStr() +
-          ":" + boolVal.getChild("aye1").getValStr() + ":" + boolVal.getChild("aye2").getValStr() +
-          ":" + deciVal.getValStr() + ":" + intVal.getValStr() + ":" + perVal.getValStr());
-        ChatUtils.info(strChoiceValue.getValue() + ":" + strChoiceValue.getValStr() + " : " +
-          intChoiceValue.getValue() + ":" + intChoiceValue.getValStr());
-        ChatUtils.info(stringValue.getValStr());
+        if (mc.player == null) {
+            setState(false);
+            return;
+        }
+        if (boolVal.getValue())
+            mc.player.setPositionAndUpdate(positionValue1.getPosX(), positionValue1.getPosY(), positionValue1.getPosZ());
+        else {
+            mc.player.motionX = positionValue1.getX();
+            mc.player.motionY = positionValue1.getY();
+            mc.player.motionZ = positionValue1.getZ();
+        }
     }
 }
