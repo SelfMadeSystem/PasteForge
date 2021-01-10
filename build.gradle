@@ -52,6 +52,8 @@ repositories {
         name = 'spongepowered-repo'
         url = 'http://repo.spongepowered.org/maven/'
     }
+
+    maven { url 'https://jitpack.io' }
 }
 
 version = "v0.1"
@@ -75,6 +77,8 @@ dependencies {
     }
     implementation 'org.jetbrains:annotations:15.0'
     compile "com.google.code.gson:gson:2.8.6"
+    implementation 'com.github.Vatuu:discord-rpc:1.6.2'
+    compile 'com.github.Vatuu:discord-rpc:1.6.2'
 }
 
 processResources {

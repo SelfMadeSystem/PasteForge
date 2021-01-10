@@ -10,8 +10,11 @@
 
 package uwu.smsgamer.pasteclient;
 
+import net.arikia.dev.drpc.DiscordRPC;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import uwu.smsgamer.pasteclient.command.CommandManager;
+import uwu.smsgamer.pasteclient.discordrpc.RPCManager;
 import uwu.smsgamer.pasteclient.fileSystem.FileManager;
 import uwu.smsgamer.pasteclient.modules.ModuleManager;
 
@@ -55,6 +58,7 @@ public class PasteClient {
 //    public ScriptManager scriptManager;
 
     public PasteClient() {
+        RPCManager.getInstance().start();
         INSTANCE = this;
     }
 
@@ -71,11 +75,13 @@ public class PasteClient {
         moduleManager.addModules();
 
         fileManager.load();
+        RPCManager.getInstance().autoDetectPresence();
     }
 
     public void stopClient() {
         try {
             fileManager.save();
+            DiscordRPC.discordShutdown();
         } catch (Exception e) {
             System.err.println("Failed to save settings:");
             e.printStackTrace();

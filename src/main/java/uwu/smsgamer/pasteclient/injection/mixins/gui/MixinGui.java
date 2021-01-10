@@ -13,10 +13,12 @@ package uwu.smsgamer.pasteclient.injection.mixins.gui;
 import net.minecraft.client.gui.Gui;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import uwu.smsgamer.pasteclient.discordrpc.RPCManager;
 
 @Mixin(Gui.class)
 public abstract class MixinGui {
     @Shadow
     protected float zLevel;
-
 }

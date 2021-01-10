@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import uwu.smsgamer.pasteclient.discordrpc.RPCManager;
 
 @Mixin(GuiScreen.class)
 @SideOnly(Side.CLIENT)
@@ -37,5 +38,10 @@ public class MixinGuiScreen {
 
             ci.cancel();
         }
+    }
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void init(CallbackInfo ci) {
+        RPCManager.getInstance().autoDetectPresence();
     }
 }

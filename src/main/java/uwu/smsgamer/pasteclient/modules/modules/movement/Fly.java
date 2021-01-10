@@ -63,7 +63,7 @@ public class Fly extends PasteModule {
             if (event.getPacket() instanceof CPacketPlayer) {
                 CPacketPlayer packet = (CPacketPlayer) event.getPacket();
                 try {
-                    Field onGround = packet.getClass().getDeclaredField(name);
+                    Field onGround = packet.getClass().getDeclaredField("onGround");
                     onGround.setAccessible(true);
                     if (groundSpoof.getValue()) {
                         onGround.set(packet, true);

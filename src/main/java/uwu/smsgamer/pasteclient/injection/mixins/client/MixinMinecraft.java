@@ -14,10 +14,12 @@ import com.darkmagician6.eventapi.EventManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.main.GameConfiguration;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import uwu.smsgamer.pasteclient.PasteClient;
+import uwu.smsgamer.pasteclient.discordrpc.RPCManager;
 import uwu.smsgamer.pasteclient.events.KeyEvent;
 import uwu.smsgamer.pasteclient.injection.interfaces.IMixinMinecraft;
 import uwu.smsgamer.pasteclient.modules.modules.fun.DemoModeModule;
@@ -30,6 +32,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import javax.annotation.Nullable;
 
 @Mixin(Minecraft.class)
 @SideOnly(Side.CLIENT)
@@ -77,6 +81,12 @@ public class MixinMinecraft implements IMixinMinecraft {
             cir.cancel();
         }
     }
+
+    @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
+    public void loadWorld(WorldClient p_loadWorld_1_, String p_loadWorld_2_, CallbackInfo ci) {
+        RPCManager.getInstance().autoDetectPresence();
+    }
+
 
     @Override
     public Session getSession() {
