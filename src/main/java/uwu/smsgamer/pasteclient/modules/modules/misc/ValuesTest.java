@@ -1,11 +1,13 @@
 package uwu.smsgamer.pasteclient.modules.modules.misc;
 
+import com.google.gson.JsonElement;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.values.*;
 
 import java.awt.*;
+import java.util.Map;
 
 public class ValuesTest extends PasteModule {
     public BoolValue boolVal = addBool("BoolVal", "Boolean Value", true);
@@ -38,6 +40,7 @@ public class ValuesTest extends PasteModule {
     public FancyColorValue fancyColorValue = (FancyColorValue) addValue(new FancyColorValue("FancyColor", "Color Value", Color.BLUE));
     public PositionValue positionValue = (PositionValue) addValue(new PositionValue("Position", "Position Value (:"));
     public PositionValue positionValue1 = (PositionValue) addValue(new PositionValue("Position1", "Position Value (:", true));
+    public CChildGen cChildGen = (CChildGen) addValue(new CChildGen("CChildGen", "Custom child gen"));
 
     public ValuesTest() {
         super("ValuesTest", "Just testing values", ModuleCategory.MISC);
@@ -67,6 +70,30 @@ public class ValuesTest extends PasteModule {
             mc.player.motionX = positionValue1.getX();
             mc.player.motionY = positionValue1.getY();
             mc.player.motionZ = positionValue1.getZ();
+        }
+    }
+
+    private static class CChildGen extends ChildGen {
+        public CChildGen(String name, String description) {
+            super(name, description);
+        }
+
+        @Override
+        public void genChildren(Value<?> parentValue) {
+            parentValue.addChild(new BoolValue(":)", "(:", true));
+        }
+
+        @Override
+        public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
+            VoidValue val = new VoidValue(entry.getKey(), "") {
+                @Override
+                public boolean rightClickRemove() {
+                    return true;
+                }
+            };
+            val.setParent(this);
+            addChild(val);
+            val.addChild(new BoolValue(":)", "(:", entry.getValue().getAsJsonObject().get(":)").getAsBoolean()));
         }
     }
 }

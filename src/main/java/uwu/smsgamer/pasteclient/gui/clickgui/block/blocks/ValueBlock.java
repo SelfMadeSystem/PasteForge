@@ -43,7 +43,7 @@ public abstract class ValueBlock extends BlockComponent {
     public void click(int mouseX, int mouseY, int mouseButton, int pressType) {
         if ((mouseButton == 1 || (this instanceof MiscBlock && mouseButton == 0))
           && pressType == 0 && canSelect() && isHovering(mouseX, mouseY))
-            if (this.value.rightClickRemove()) {
+            if (this.value.rightClickRemove() && mouseButton == 1) {
                 this.value.getParent().removeChild(this.value);
                 this.gui.reload();
             } else if (this.value.hasChildren()) gui.setChild(new ValueGUI(gui, this.value));

@@ -3,11 +3,11 @@ package uwu.smsgamer.pasteclient.values;
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.Map;
+import java.util.*;
 
-public class MultiString extends ChildGen {
-    public MultiString(String name, String description) {
-        super(name, description);
+public abstract class ChildGen extends Value<Void> {
+    public ChildGen(String name, String description) {
+        super(name, description, null);
     }
 
     @Override
@@ -26,12 +26,16 @@ public class MultiString extends ChildGen {
     }
 
     @Override
-    public void genChildren(Value<?> parentValue) {
+    public void genNewChild() {
+        Value<?> val = genMainChild();
+        addChild(val);
+        genChildren(val);
     }
 
-    @Override
+    public abstract void genChildren(Value<?> parentValue);
+
     public Value<?> genMainChild() {
-        StringValue val = new StringValue("Entry" + children.size(), "", "") {
+        VoidValue val = new VoidValue("Entry" + children.size(), "") {
             @Override
             public boolean rightClickRemove() {
                 return true;
@@ -46,16 +50,23 @@ public class MultiString extends ChildGen {
         return true;
     }
 
+
+    public abstract void loadFromJSON(Map.Entry<String, JsonElement> entry);
+
     @Override
-    public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
-        StringValue val = new StringValue(entry.getKey(), "", entry.getValue().getAsString()) {
-            @Override
-            public boolean rightClickRemove() {
-                return true;
+    public void fromJSON(JsonObject obj) {
+        if (obj.has(name)) {
+            if (obj.get(name).isJsonObject()) {
+                obj = obj.getAsJsonObject(name);
+                for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
+                    loadFromJSON(entry);
+                }
+            } else {
+                fromElement(obj.get(name));
             }
-        };
-        val.parent = this;
-        addChild(val);
+        } else {
+            LogManager.getLogger().warn(name + " is not in object.  Module: " + module.getName());
+        }
     }
 
     @Override

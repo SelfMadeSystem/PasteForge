@@ -45,6 +45,10 @@ public abstract class Value<T> {
         return parent;
     }
 
+    public void setParent(Value<?> parent) {
+        this.parent = parent;
+    }
+
     public HashMap<String, Value<?>> getChildren() {
         return children;
     }
