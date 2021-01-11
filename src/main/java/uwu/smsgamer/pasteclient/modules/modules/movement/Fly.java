@@ -2,8 +2,9 @@ package uwu.smsgamer.pasteclient.modules.modules.movement;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import net.minecraft.network.play.client.CPacketPlayer;
+import org.jetbrains.annotations.Nullable;
 import uwu.smsgamer.pasteclient.events.*;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.*;
@@ -129,31 +130,42 @@ public class Fly extends PasteModule {
 
         @Override
         public void genChildren(Value<?> parentValue) {
+            genChildren(parentValue, null);
+        }
+
+        public void genChildren(Value<?> parentValue, @Nullable JsonObject object) {
             BoolValue v;
-            parentValue.addChild(v = new BoolValue("Packet", "Send packet to position.", false));
-            parentValue.addChild(new BoolValue("ToFloor", "Teleports to floor.", false) {
+            parentValue.addChild(v = new BoolValue("Packet", "Send packet to position.",
+              object != null && object.get("Packet").getAsBoolean()));
+            parentValue.addChild(new BoolValue("ToFloor", "Teleports to floor.",
+              object != null && object.get("ToFloor").getAsBoolean()) {
                 @Override
                 public String getDescription() {
                     return v.getValue() ? "Sends packet to floor." : "Teleports to floor.";
                 }
             });
-            parentValue.addChild(new PositionValue("Position", "How to set the position.", false));
+            Value<?> val;
+            parentValue.addChild(val = new PositionValue("Position", "How to set the position.", false));
+            if (object != null) val.fromJSON(object.get("Position").getAsJsonObject());
             parentValue.addChild(new RangeValue("Timer",
               "To set the timer to (random between two points). Set to 0 to have no effect.",
               1, 1, 0, 10, 0.05, NumberValue.NumberType.DECIMAL));
-            parentValue.addChild(new IntChoiceValue("MotionXZType", "The type of motion to set for XZ.", 0,
+            parentValue.addChild(new IntChoiceValue("MotionXZType", "The type of motion to set for XZ.",
+              object == null ? 0 : object.get("MotionXZType").getAsInt(),
               new StringHashMap<>(
                 0, "Set",
                 1, "Add",
                 2, "Times"
               )));
-            parentValue.addChild(new IntChoiceValue("MotionYType", "The type of motion to set for Y.", 0,
+            parentValue.addChild(new IntChoiceValue("MotionYType", "The type of motion to set for Y.",
+              object == null ? 0 : object.get("MotionXZType").getAsInt(),
               new StringHashMap<>(
                 0, "Set",
                 1, "Add",
                 2, "Times"
               )));
-            parentValue.addChild(new PositionValue("Motion", "The motion to set.", false));
+            parentValue.addChild(val = new PositionValue("Motion", "The motion to set.", false));
+            if (object != null) val.fromJSON(object.get("Motion").getAsJsonObject());
         }
 
         @Override
@@ -164,19 +176,39 @@ public class Fly extends PasteModule {
                 if (!hasChild(sb.toString())) break;
                 sb.setLength(sb.length() - String.valueOf(i).length());
             }
+            StringValue n = new StringValue("Name", "Set the name of this value.", sb.toString());
             VoidValue val = new VoidValue(sb.toString(), "") {
                 @Override
                 public boolean rightClickRemove() {
                     return true;
                 }
+                @Override
+                public String getName() {
+                    return n.getValue();
+                }
             };
             val.setParent(this);
+            val.addChild(n);
             return val;
         }
 
         @Override
         public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
-            // TODO
+            JsonObject objects = entry.getValue().getAsJsonObject();
+            StringValue n = new StringValue("Name", "Set the name of this value.", objects.get("Name").getAsString());
+            VoidValue val = new VoidValue(entry.getKey(), "") {
+                @Override
+                public boolean rightClickRemove() {
+                    return true;
+                }
+                @Override
+                public String getName() {
+                    return n.getValue();
+                }
+            };
+            val.setParent(this);
+            val.addChild(n);
+            genChildren(val, objects);
         }
     }
 }
