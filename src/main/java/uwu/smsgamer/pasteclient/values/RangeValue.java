@@ -79,8 +79,8 @@ public class RangeValue extends Value<Pair<Double, Double>> { // FIXME: 2020-11-
         if (Math.abs(getMinScaled() - val) <= Math.abs(getMaxScaled() - val))
             value.a = MathUtil.roundInc(((val * (max - min)) + min), step);
         else value.b = MathUtil.roundInc(((val * (max - min)) + min), step);
-        if (value.a > value.b) { // Shouldn't be necessary.
-            double c = value.b;
+        if (value.a > value.b) {
+            double c = value.a;
             value.a = value.b;
             value.b = c;
         }

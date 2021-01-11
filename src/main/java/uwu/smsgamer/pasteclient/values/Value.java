@@ -156,14 +156,14 @@ public abstract class Value<T> {
                         object.add(child.name, obj.get(child.name));
                         child.fromJSON(object);
                     } else {
-                        LogManager.getLogger().warn(child.name + " is not in object. Name: " + name + "  Module: " + module.getName());
+                        LogManager.getLogger().warn(child.name + " is not in object. Name: " + name + "  Module: " + (module == null ? "null" : module.getName()));
                     }
                 }
             } else {
                 fromElement(obj.get(name));
             }
         } else {
-            LogManager.getLogger().warn(name + " is not in object.  Module: " + module.getName());
+            LogManager.getLogger().warn(name + " is not in object.  Module: " + (module == null ? "null" : module.getName()));
         }
     }
 
