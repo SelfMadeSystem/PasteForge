@@ -96,6 +96,7 @@ public class Fly extends PasteModule {
         @Override
         public void genChildren(Value<?> parentValue) {
             parentValue.addChild(new ActionSettings());
+            parentValue.addChild(new ConditionSettings());
         }
 
         @Override
@@ -106,19 +107,40 @@ public class Fly extends PasteModule {
                 if (!hasChild(sb.toString())) break;
                 sb.setLength(sb.length() - String.valueOf(i).length());
             }
+            StringValue n = new StringValue("Name", "Set the name of this event.", sb.toString());
             VoidValue val = new VoidValue(sb.toString(), "") {
                 @Override
                 public boolean rightClickRemove() {
                     return true;
                 }
+                @Override
+                public String getName() {
+                    return n.getValue();
+                }
             };
+            val.addChild(n);
             val.setParent(this);
             return val;
         }
 
         @Override
         public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
-            // TODO
+            JsonObject obj = entry.getValue().getAsJsonObject();
+            StringValue n = new StringValue("Name", "Set the name of this event.", obj.get("Name").getAsString());
+            VoidValue val = new VoidValue(entry.getKey(), "") {
+                @Override
+                public boolean rightClickRemove() {
+                    return true;
+                }
+                @Override
+                public String getName() {
+                    return n.getValue();
+                }
+            };
+            val.addChild(n);
+            val.setParent(this);
+            genChildren(val);
+            val.fromJSON(obj);
         }
     }
 
@@ -135,37 +157,32 @@ public class Fly extends PasteModule {
 
         public void genChildren(Value<?> parentValue, @Nullable JsonObject object) {
             BoolValue v;
-            parentValue.addChild(v = new BoolValue("Packet", "Send packet to position.",
-              object != null && object.get("Packet").getAsBoolean()));
-            parentValue.addChild(new BoolValue("ToFloor", "Teleports to floor.",
-              object != null && object.get("ToFloor").getAsBoolean()) {
+            parentValue.addChild(v = new BoolValue("Packet", "Send packet to position.", false));
+            parentValue.addChild(new BoolValue("ToFloor", "Teleports to floor.", false) {
                 @Override
                 public String getDescription() {
                     return v.getValue() ? "Sends packet to floor." : "Teleports to floor.";
                 }
             });
-            Value<?> val;
-            parentValue.addChild(val = new PositionValue("Position", "How to set the position.", false));
-            if (object != null) val.fromJSON(object.get("Position").getAsJsonObject());
+            parentValue.addChild(new PositionValue("Position", "How to set the position.", false));
             parentValue.addChild(new RangeValue("Timer",
               "To set the timer to (random between two points). Set to 0 to have no effect.",
               1, 1, 0, 10, 0.05, NumberValue.NumberType.DECIMAL));
-            parentValue.addChild(new IntChoiceValue("MotionXZType", "The type of motion to set for XZ.",
-              object == null ? 0 : object.get("MotionXZType").getAsInt(),
+            parentValue.addChild(new IntChoiceValue("MotionXZType", "The type of motion to set for XZ.", 0,
               new StringHashMap<>(
                 0, "Set",
                 1, "Add",
                 2, "Times"
               )));
-            parentValue.addChild(new IntChoiceValue("MotionYType", "The type of motion to set for Y.",
-              object == null ? 0 : object.get("MotionXZType").getAsInt(),
+            parentValue.addChild(new IntChoiceValue("MotionYType", "The type of motion to set for Y.", 0,
               new StringHashMap<>(
                 0, "Set",
                 1, "Add",
                 2, "Times"
               )));
-            parentValue.addChild(val = new PositionValue("Motion", "The motion to set.", false));
-            if (object != null) val.fromJSON(object.get("Motion").getAsJsonObject());
+            parentValue.addChild(new PositionValue("Motion", "The motion to set.", false));
+            if (object != null)
+                parentValue.fromJSON(object);
         }
 
         @Override
@@ -176,7 +193,7 @@ public class Fly extends PasteModule {
                 if (!hasChild(sb.toString())) break;
                 sb.setLength(sb.length() - String.valueOf(i).length());
             }
-            StringValue n = new StringValue("Name", "Set the name of this value.", sb.toString());
+            StringValue n = new StringValue("Name", "Set the name of this action.", sb.toString());
             VoidValue val = new VoidValue(sb.toString(), "") {
                 @Override
                 public boolean rightClickRemove() {
@@ -209,6 +226,28 @@ public class Fly extends PasteModule {
             val.setParent(this);
             val.addChild(n);
             genChildren(val, objects);
+        }
+    }
+
+    private static class ConditionSettings extends ChildGen {
+
+        public ConditionSettings() {
+            super("Condition Settings", "Settings for triggering of event.");
+        }
+
+        @Override
+        public void genChildren(Value<?> parentValue) {
+            parentValue.addChild(new IntChoiceValue("Type", "Type of trigger for this event.", 0,
+              new StringHashMap<>(
+                0, "Tick",
+                1, "Add",
+                2, "Times"
+              )));
+        }
+
+        @Override
+        public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
+
         }
     }
 }
