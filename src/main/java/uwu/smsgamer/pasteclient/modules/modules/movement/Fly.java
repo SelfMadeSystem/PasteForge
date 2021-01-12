@@ -6,6 +6,7 @@ import com.google.gson.*;
 import net.minecraft.network.play.client.CPacketPlayer;
 import org.jetbrains.annotations.Nullable;
 import uwu.smsgamer.pasteclient.events.*;
+import uwu.smsgamer.pasteclient.injection.interfaces.*;
 import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
@@ -34,6 +35,11 @@ public class Fly extends PasteModule {
     @Override
     protected void onEnable() {
         if (mc.player != null) startY = mc.player.posY;
+    }
+
+    @Override
+    protected void onDisable() {
+        ((IMixinTimer) ((IMixinMinecraft) mc).getTimer()).setTimerSpeed(1);
     }
 
     @EventTarget
@@ -154,14 +160,12 @@ public class Fly extends PasteModule {
         }
 
         public void doAction(Fly fly) {
-            if (conditions.isTickGood(fly)) {
-                actions.doAction();
-            }
+            if (conditions.isTickGood(fly)) actions.doAction(fly);
         }
     }
 
     private static class ActionSettings extends ChildGen {
-        private List<Action> actions = new ArrayList<>();
+        private final List<Action> actions = new ArrayList<>();
 
         public ActionSettings() {
             super("Action Settings", "Customize the actions of this event.");
@@ -175,6 +179,13 @@ public class Fly extends PasteModule {
         public void genChildren(Value<?> parentValue, @Nullable JsonObject object) {
             Action a = new Action();
             parentValue.addChild(a.packet = new BoolValue("Packet", "Send packet to position.", false));
+            parentValue.addChild(a.spoofGround = new BoolValue("SpoofGround", "Spoofs ground.", false));
+            parentValue.addChild(a.groundSpoof = new BoolValue("GroundSpoof", "Spoofs yes or no ground.", false) {
+                @Override
+                public boolean isVisible() {
+                    return a.spoofGround.getValue();
+                }
+            });
             parentValue.addChild(a.toFloor = new BoolValue("ToFloor", "Teleports to floor.", false) {
                 @Override
                 public String getDescription() {
@@ -182,9 +193,9 @@ public class Fly extends PasteModule {
                 }
             });
             parentValue.addChild(a.position = new PositionValue("Position", "How to set the position.", false));
-            parentValue.addChild(a.timer = new RangeValue("Timer",
-              "To set the timer to (random between two points). Set to 0 to have no effect.",
-              1, 1, 0, 10, 0.05, NumberValue.NumberType.DECIMAL));
+            parentValue.addChild(a.timer = new NumberValue("Timer",
+              "To set the timer to. Set to 0 to have no effect.",
+              1, 0, 10, 0.05, NumberValue.NumberType.DECIMAL));
             parentValue.addChild(a.motionXZType = new IntChoiceValue("MotionXZType", "The type of motion to set for XZ.", 0,
               new StringHashMap<>(
                 0, "Set",
@@ -248,21 +259,67 @@ public class Fly extends PasteModule {
             genChildren(val, objects);
         }
 
-        public void doAction() {
+        public void doAction(Fly fly) {
             for (Action a : actions) {
-                double x = a.position.getX();
-                double y = a.position.getY();
-                double z = a.position.getZ();
+                double x = a.position.getPosX();
+                double y = a.toFloor.getValue() ? 0 : a.position.getPosY();
+                double z = a.position.getPosZ();
                 if (a.packet.getValue()) {
+                    PacketUtils.CPacketPlayerBuilder b = new PacketUtils.CPacketPlayerBuilder(mc.player, true, false);
+                    b.setX(x);
+                    b.setY(y);
+                    b.setZ(z);
+                    if (a.spoofGround.getValue()) b.setOnGround(a.groundSpoof.getValue());
+                    CPacketPlayer packet = b.build();
+                    mc.player.connection.sendPacket(packet);
+                } else {
+                    mc.player.setPositionAndUpdate(x, y, z);
+                    if (a.spoofGround.getValue()) {
+                        fly.spoofGround = true;
+                        fly.spoofGroundM = a.groundSpoof.getValue();
+                    }
                 }
+                x = a.motion.getX();
+                y = a.motion.getY();
+                z = a.motion.getZ();
+
+                switch (a.motionXZType.getValue()) { //0 set 1 add 2 times
+                    case 0:
+                        mc.player.motionX = x;
+                        mc.player.motionZ = z;
+                        break;
+                    case 1:
+                        mc.player.motionX += x;
+                        mc.player.motionZ += z;
+                        break;
+                    case 2:
+                        mc.player.motionX *= x;
+                        mc.player.motionZ *= z;
+                }
+
+                switch (a.motionYType.getValue()) {
+                    case 0:
+                        mc.player.motionY = y;
+                        break;
+                    case 1:
+                        mc.player.motionY += y;
+                        break;
+                    case 2:
+                        mc.player.motionY *= y;
+                }
+
+                if (a.timer.getValue() > 0)
+                    ((IMixinTimer) ((IMixinMinecraft) mc).getTimer()).setTimerSpeed(a.timer.getValue().floatValue());
             }
         }
 
         private static class Action {
             public BoolValue packet;
+            public BoolValue spoofGround;
+            public BoolValue groundSpoof;
             public BoolValue toFloor;
             public PositionValue position;
-            public RangeValue timer;
+            public NumberValue timer;
             public IntChoiceValue motionXZType;
             public IntChoiceValue motionYType;
             public PositionValue motion;
