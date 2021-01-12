@@ -1,10 +1,24 @@
 package uwu.smsgamer.pasteclient.utils;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.network.play.client.CPacketPlayer;
 
 public class PacketUtils {
     public static class CPacketPlayerBuilder extends CPacketPlayer {
         public CPacketPlayerBuilder() {
+        }
+
+        public CPacketPlayerBuilder(Entity entity, boolean move, boolean rotation) {
+            if (move) {
+                this.x = entity.posX;
+                this.y = entity.posY;
+                this.z = entity.posZ;
+            }
+            if (rotation) {
+                this.yaw = entity.rotationYaw;
+                this.pitch = entity.rotationPitch;
+            }
+            this.onGround = entity.onGround;
         }
 
         public CPacketPlayerBuilder(CPacketPlayer base) {
