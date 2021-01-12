@@ -10,7 +10,7 @@ import uwu.smsgamer.pasteclient.modules.*;
 import uwu.smsgamer.pasteclient.utils.*;
 import uwu.smsgamer.pasteclient.values.*;
 
-import java.util.Map;
+import java.util.*;
 
 public class Fly extends PasteModule {
     private final IntChoiceValue mode = addIntChoice("Mode", "Mode for fly", 0,
@@ -29,6 +29,12 @@ public class Fly extends PasteModule {
 
     private boolean spoofGround; // Whether to spoof ground or not
     private boolean spoofGroundM; // Spoof ground to this
+    public double startY; // Spoof ground to this
+
+    @Override
+    protected void onEnable() {
+        if (mc.player != null) startY = mc.player.posY;
+    }
 
     @EventTarget
     private void onMove(MotionUpdateEvent event) {
@@ -88,6 +94,8 @@ public class Fly extends PasteModule {
     }
 
     private static class AdvancedSettings extends ChildGen {
+        private ActionSettings actions;
+        private ConditionSettings conditions;
 
         public AdvancedSettings(String name, String description) {
             super(name, description);
@@ -95,8 +103,8 @@ public class Fly extends PasteModule {
 
         @Override
         public void genChildren(Value<?> parentValue) {
-            parentValue.addChild(new ActionSettings());
-            parentValue.addChild(new ConditionSettings());
+            parentValue.addChild(actions = new ActionSettings());
+            parentValue.addChild(conditions = new ConditionSettings());
         }
 
         @Override
@@ -113,6 +121,7 @@ public class Fly extends PasteModule {
                 public boolean rightClickRemove() {
                     return true;
                 }
+
                 @Override
                 public String getName() {
                     return n.getValue();
@@ -132,6 +141,7 @@ public class Fly extends PasteModule {
                 public boolean rightClickRemove() {
                     return true;
                 }
+
                 @Override
                 public String getName() {
                     return n.getValue();
@@ -141,6 +151,12 @@ public class Fly extends PasteModule {
             val.setParent(this);
             genChildren(val);
             val.fromJSON(obj);
+        }
+
+        public void doAction(Fly fly) {
+            if (conditions.isTickGood(fly)) {
+                actions.doAction();
+            }
         }
     }
 
@@ -199,6 +215,7 @@ public class Fly extends PasteModule {
                 public boolean rightClickRemove() {
                     return true;
                 }
+
                 @Override
                 public String getName() {
                     return n.getValue();
@@ -218,6 +235,7 @@ public class Fly extends PasteModule {
                 public boolean rightClickRemove() {
                     return true;
                 }
+
                 @Override
                 public String getName() {
                     return n.getValue();
@@ -227,9 +245,14 @@ public class Fly extends PasteModule {
             val.addChild(n);
             genChildren(val, objects);
         }
+
+        public void doAction() {
+            // todo
+        }
     }
 
     private static class ConditionSettings extends ChildGen {
+        private List<Cond> conds;
 
         public ConditionSettings() {
             super("Condition Settings", "Settings for triggering of event.");
@@ -237,17 +260,130 @@ public class Fly extends PasteModule {
 
         @Override
         public void genChildren(Value<?> parentValue) {
-            parentValue.addChild(new IntChoiceValue("Type", "Type of trigger for this event.", 0,
-              new StringHashMap<>(
-                0, "Tick",
-                1, "Add",
-                2, "Times"
-              )));
+            Cond c = new Cond();
+            parentValue.addChild(c.checkTicks = new BoolValue("Check Ticks", "Checks for ticks.", true));
+            parentValue.addChild(c.tickMod = new NumberValue("Ticks Modulus", "Number to do modulus of ticks.", 1, 1, 40, 1, NumberValue.NumberType.INTEGER) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkTicks.getValue();
+                }
+            });
+            parentValue.addChild(c.tickRem = new NumberValue("Ticks Remainder", "Number to do modulus of ticks.", 1, 1, 40, 1, NumberValue.NumberType.INTEGER) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkTicks.getValue();
+                }
+            });
+            parentValue.addChild(c.tickDel = new NumberValue("Ticks Delay", "The amount of delay from when this module starts.", 0, 0, 40, 1, NumberValue.NumberType.INTEGER) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkTicks.getValue();
+                }
+            });
+
+            parentValue.addChild(c.checkXZMotion = new BoolValue("Check XZ Motion", "Checks for horizontal motion.", false));
+
+            parentValue.addChild(c.xzMinSpeed = new NumberValue("Min XZ Speed", "Minimum horizontal speed.", 0, 0, 4, 0.01, NumberValue.NumberType.DECIMAL) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkXZMotion.getValue();
+                }
+            });
+            parentValue.addChild(c.xzMaxSpeed = new NumberValue("Max XZ Speed", "Maximum horizontal speed.", 0, 0, 4, 0.01, NumberValue.NumberType.DECIMAL) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkXZMotion.getValue();
+                }
+            });
+
+            parentValue.addChild(c.checkYMotion = new BoolValue("Check Y Motion", "Checks for vertical motion.", false));
+
+            parentValue.addChild(c.yMinSpeed = new NumberValue("Min Y Speed", "Minimum vertical speed.", 0, -4, 4, 0.01, NumberValue.NumberType.DECIMAL) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkYMotion.getValue();
+                }
+            });
+            parentValue.addChild(c.yMaxSpeed = new NumberValue("Max Y Speed", "Maximum vertical speed.", 0, -4, 4, 0.01, NumberValue.NumberType.DECIMAL) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkYMotion.getValue();
+                }
+            });
+
+            parentValue.addChild(c.checkBelowStartY = new BoolValue("Check Below Start Y", "Checks for posY is below starting Y.", false));
+
+            parentValue.addChild(c.belowYOffset = new NumberValue("Below Y Offset", "Offset for checking below Y.", 0, -8, 8, 0.1, NumberValue.NumberType.DECIMAL) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkBelowStartY.getValue();
+                }
+            });
+
+            parentValue.addChild(c.checkAboveStartY = new BoolValue("Check Above Start Y", "Checks for posY is above starting Y.", false));
+
+            parentValue.addChild(c.aboveYOffset = new NumberValue("Above Y Offset", "Offset for checking above Y.", 0, -8, 8, 0.1, NumberValue.NumberType.DECIMAL) {
+                @Override
+                public boolean isVisible() {
+                    return c.checkAboveStartY.getValue();
+                }
+            });
+
+            parentValue.addChild(c.checkGround = new BoolValue("Check Ground", "Checks for being on ground.", false));
+            parentValue.addChild(c.checkAir = new BoolValue("Check Air", "Checks for being in air.", false));
+            conds.add(c);
+        }
+
+        public void start() {
+            for (Cond c : conds)
+                c.ticks = -c.tickDel.getValue().intValue();
+        }
+
+        public boolean isTickGood(Fly fly) {
+            boolean result = true;
+            for (Cond c : conds) {
+                if (c.checkGround.getValue())
+                    result = mc.player.onGround;
+                if (c.checkAir.getValue())
+                    result &= !mc.player.onGround;
+                if (c.checkXZMotion.getValue())
+                    result &= MotionUtils.getSpeed() >= c.xzMinSpeed.getValue() && MotionUtils.getSpeed() <= c.xzMaxSpeed.getValue();
+                if (c.checkYMotion.getValue())
+                    result &= mc.player.motionY >= c.yMinSpeed.getValue() && mc.player.motionY <= c.yMaxSpeed.getValue();
+                if (c.checkTicks.getValue())
+                    result &= c.ticks >= 0 && (c.ticks % c.tickMod.getValue().intValue() == c.tickRem.getValue().intValue());
+                if (c.checkBelowStartY.getValue())
+                    result &= (fly.startY + c.belowYOffset.getValue()) < mc.player.posY;
+                if (c.checkAboveStartY.getValue())
+                    result &= (fly.startY + c.aboveYOffset.getValue()) > mc.player.posY;
+                c.ticks++;
+            }
+            return result;
         }
 
         @Override
         public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
 
+        }
+
+        private static class Cond {
+            public int ticks;
+            public BoolValue checkTicks;
+            public NumberValue tickMod;
+            public NumberValue tickRem;
+            public NumberValue tickDel;
+            public BoolValue checkXZMotion;
+            public NumberValue xzMinSpeed;
+            public NumberValue xzMaxSpeed;
+            public BoolValue checkYMotion;
+            public NumberValue yMinSpeed;
+            public NumberValue yMaxSpeed;
+            public BoolValue checkBelowStartY;
+            public NumberValue belowYOffset;
+            public BoolValue checkAboveStartY;
+            public NumberValue aboveYOffset;
+            public BoolValue checkGround;
+            public BoolValue checkAir;
         }
     }
 }
