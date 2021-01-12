@@ -72,7 +72,7 @@ public class Fly extends PasteModule {
                 break;
             }
             case 2: {
-
+                advanced.doAction(this);
             }
         }
     }
