@@ -161,6 +161,7 @@ public class Fly extends PasteModule {
     }
 
     private static class ActionSettings extends ChildGen {
+        private List<Action> actions = new ArrayList<>();
 
         public ActionSettings() {
             super("Action Settings", "Customize the actions of this event.");
@@ -172,33 +173,34 @@ public class Fly extends PasteModule {
         }
 
         public void genChildren(Value<?> parentValue, @Nullable JsonObject object) {
-            BoolValue v;
-            parentValue.addChild(v = new BoolValue("Packet", "Send packet to position.", false));
-            parentValue.addChild(new BoolValue("ToFloor", "Teleports to floor.", false) {
+            Action a = new Action();
+            parentValue.addChild(a.packet = new BoolValue("Packet", "Send packet to position.", false));
+            parentValue.addChild(a.toFloor = new BoolValue("ToFloor", "Teleports to floor.", false) {
                 @Override
                 public String getDescription() {
-                    return v.getValue() ? "Sends packet to floor." : "Teleports to floor.";
+                    return a.packet.getValue() ? "Sends packet to floor." : "Teleports to floor.";
                 }
             });
-            parentValue.addChild(new PositionValue("Position", "How to set the position.", false));
-            parentValue.addChild(new RangeValue("Timer",
+            parentValue.addChild(a.position = new PositionValue("Position", "How to set the position.", false));
+            parentValue.addChild(a.timer = new RangeValue("Timer",
               "To set the timer to (random between two points). Set to 0 to have no effect.",
               1, 1, 0, 10, 0.05, NumberValue.NumberType.DECIMAL));
-            parentValue.addChild(new IntChoiceValue("MotionXZType", "The type of motion to set for XZ.", 0,
+            parentValue.addChild(a.motionXZType = new IntChoiceValue("MotionXZType", "The type of motion to set for XZ.", 0,
               new StringHashMap<>(
                 0, "Set",
                 1, "Add",
                 2, "Times"
               )));
-            parentValue.addChild(new IntChoiceValue("MotionYType", "The type of motion to set for Y.", 0,
+            parentValue.addChild(a.motionYType = new IntChoiceValue("MotionYType", "The type of motion to set for Y.", 0,
               new StringHashMap<>(
                 0, "Set",
                 1, "Add",
                 2, "Times"
               )));
-            parentValue.addChild(new PositionValue("Motion", "The motion to set.", false));
+            parentValue.addChild(a.motion = new PositionValue("Motion", "The motion to set.", false));
             if (object != null)
                 parentValue.fromJSON(object);
+            actions.add(a);
         }
 
         @Override
@@ -247,12 +249,28 @@ public class Fly extends PasteModule {
         }
 
         public void doAction() {
-            // todo
+            for (Action a : actions) {
+                double x = a.position.getX();
+                double y = a.position.getY();
+                double z = a.position.getZ();
+                if (a.packet.getValue()) {
+                }
+            }
+        }
+
+        private static class Action {
+            public BoolValue packet;
+            public BoolValue toFloor;
+            public PositionValue position;
+            public RangeValue timer;
+            public IntChoiceValue motionXZType;
+            public IntChoiceValue motionYType;
+            public PositionValue motion;
         }
     }
 
     private static class ConditionSettings extends ChildGen {
-        private List<Cond> conds;
+        private final List<Cond> conds = new ArrayList<>();
 
         public ConditionSettings() {
             super("Condition Settings", "Settings for triggering of event.");
