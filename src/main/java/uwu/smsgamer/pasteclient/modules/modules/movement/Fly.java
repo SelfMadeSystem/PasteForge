@@ -17,12 +17,12 @@ public class Fly extends PasteModule {
     private final IntChoiceValue mode = addIntChoice("Mode", "Mode for fly", 0,
       0, "Vanilla",
       1, "Float",
-      2, "Advanced");// TODO: 2020-11-13 make me
+      2, "Advanced");
     private final NumberValue speed = addDeci("Speed", "How fast you go.", 1, 0, 5, 0.01);
     private final BoolValue ground = addBool("Ground", "Sets ground client side.", false);
     private final BoolValue groundSpoof = addBool("GroundSpoof", "Spoofs your ground.", false);
     private final BoolValue groundSpoofM = addBool("GroundSpoofM", "Sets spoof ground to this.", false);
-    private final AdvancedSettings advanced = (AdvancedSettings) addValue(new AdvancedSettings("Advanced settings", "idk todo: this")); // todo: this
+    private final AdvancedSettings advanced = (AdvancedSettings) addValue(new AdvancedSettings("Advanced settings", "idk todo: this"));
 
     public Fly() {
         super("Fly", "Lets you fly.", ModuleCategory.MOVEMENT);
@@ -35,6 +35,7 @@ public class Fly extends PasteModule {
     @Override
     protected void onEnable() {
         if (mc.player != null) startY = mc.player.posY;
+        advanced.settings.forEach(v -> v.condition.start());
     }
 
     @Override
@@ -100,17 +101,23 @@ public class Fly extends PasteModule {
     }
 
     private static class AdvancedSettings extends ChildGen {
-        private ActionSettings actions;
-        private ConditionSettings conditions;
+        private final List<CVoid> settings = new ArrayList<>();
 
         public AdvancedSettings(String name, String description) {
             super(name, description);
         }
 
         @Override
+        public void removeChild(Value<?> value) {
+            super.removeChild(value);
+            settings.remove(value);
+        }
+
+        @Override
         public void genChildren(Value<?> parentValue) {
-            parentValue.addChild(actions = new ActionSettings());
-            parentValue.addChild(conditions = new ConditionSettings());
+            CVoid v = (CVoid) parentValue;
+            parentValue.addChild(v.action = new ActionSettings());
+            parentValue.addChild(v.condition = new ConditionSettings());
         }
 
         @Override
@@ -122,19 +129,11 @@ public class Fly extends PasteModule {
                 sb.setLength(sb.length() - String.valueOf(i).length());
             }
             StringValue n = new StringValue("Name", "Set the name of this event.", sb.toString());
-            VoidValue val = new VoidValue(sb.toString(), "") {
-                @Override
-                public boolean rightClickRemove() {
-                    return true;
-                }
-
-                @Override
-                public String getName() {
-                    return n.getValue();
-                }
-            };
+            CVoid val = new CVoid(sb.toString(), "");
             val.addChild(n);
+            val.name = n;
             val.setParent(this);
+            settings.add(val);
             return val;
         }
 
@@ -157,10 +156,31 @@ public class Fly extends PasteModule {
             val.setParent(this);
             genChildren(val);
             val.fromJSON(obj);
-        }
+        } // todo
 
         public void doAction(Fly fly) {
-            if (conditions.isTickGood(fly)) actions.doAction(fly);
+            for (CVoid setting : settings)
+                if (setting.condition.isTickGood(fly)) setting.action.doAction(fly);
+        }
+
+        private static class CVoid extends VoidValue {
+            public StringValue name;
+            public ActionSettings action;
+            public ConditionSettings condition;
+
+            public CVoid(String name, String description) {
+                super(name, description);
+            }
+
+            @Override
+            public boolean rightClickRemove() {
+                return true;
+            }
+
+            @Override
+            public String getName() {
+                return name.getValue();
+            }
         }
     }
 
@@ -177,7 +197,7 @@ public class Fly extends PasteModule {
         }
 
         public void genChildren(Value<?> parentValue, @Nullable JsonObject object) {
-            Action a = new Action();
+            Action a = (Action) parentValue;
             parentValue.addChild(a.packet = new BoolValue("Packet", "Send packet to position.", false));
             parentValue.addChild(a.spoofGround = new BoolValue("SpoofGround", "Spoofs ground.", false));
             parentValue.addChild(a.groundSpoof = new BoolValue("GroundSpoof", "Spoofs yes or no ground.", false) {
@@ -191,7 +211,7 @@ public class Fly extends PasteModule {
                 public String getDescription() {
                     return a.packet.getValue() ? "Sends packet to floor." : "Teleports to floor.";
                 }
-            });
+            }); // Todo: Implement
             parentValue.addChild(a.position = new PositionValue("Position", "How to set the position.", false));
             parentValue.addChild(a.timer = new NumberValue("Timer",
               "To set the timer to. Set to 0 to have no effect.",
@@ -215,6 +235,12 @@ public class Fly extends PasteModule {
         }
 
         @Override
+        public void removeChild(Value<?> value) {
+            super.removeChild(value);
+            actions.remove(value);
+        }
+
+        @Override
         public Value<?> genMainChild() {
             StringBuilder sb = new StringBuilder("Action");
             for (int i = 0; i <= children.size(); i++) {
@@ -223,7 +249,7 @@ public class Fly extends PasteModule {
                 sb.setLength(sb.length() - String.valueOf(i).length());
             }
             StringValue n = new StringValue("Name", "Set the name of this action.", sb.toString());
-            VoidValue val = new VoidValue(sb.toString(), "") {
+            Action val = new Action(sb.toString(), "") {
                 @Override
                 public boolean rightClickRemove() {
                     return true;
@@ -256,7 +282,7 @@ public class Fly extends PasteModule {
             };
             val.setParent(this);
             val.addChild(n);
-            genChildren(val, objects);
+            genChildren(val, objects); // Todo
         }
 
         public void doAction(Fly fly) {
@@ -313,7 +339,7 @@ public class Fly extends PasteModule {
             }
         }
 
-        private static class Action {
+        private static class Action extends VoidValue {
             public BoolValue packet;
             public BoolValue spoofGround;
             public BoolValue groundSpoof;
@@ -323,6 +349,10 @@ public class Fly extends PasteModule {
             public IntChoiceValue motionXZType;
             public IntChoiceValue motionYType;
             public PositionValue motion;
+
+            public Action(String name, String description) {
+                super(name, description);
+            }
         }
     }
 
@@ -334,8 +364,14 @@ public class Fly extends PasteModule {
         }
 
         @Override
+        public void removeChild(Value<?> value) {
+            super.removeChild(value);
+            conds.remove(value);
+        }
+
+        @Override
         public void genChildren(Value<?> parentValue) {
-            Cond c = new Cond();
+            Cond c = (Cond) parentValue;
             parentValue.addChild(c.checkTicks = new BoolValue("Check Ticks", "Checks for ticks.", true));
             parentValue.addChild(c.tickMod = new NumberValue("Ticks Modulus", "Number to do modulus of ticks.", 1, 1, 40, 1, NumberValue.NumberType.INTEGER) {
                 @Override
@@ -343,7 +379,7 @@ public class Fly extends PasteModule {
                     return c.checkTicks.getValue();
                 }
             });
-            parentValue.addChild(c.tickRem = new NumberValue("Ticks Remainder", "Number to do modulus of ticks.", 1, 1, 40, 1, NumberValue.NumberType.INTEGER) {
+            parentValue.addChild(c.tickRem = new NumberValue("Ticks Remainder", "Number to do modulus of ticks.", 0, 0, 40, 1, NumberValue.NumberType.INTEGER) {
                 @Override
                 public boolean isVisible() {
                     return c.checkTicks.getValue();
@@ -415,7 +451,7 @@ public class Fly extends PasteModule {
         }
 
         public boolean isTickGood(Fly fly) {
-            boolean result = true;
+            boolean result = !conds.isEmpty();
             for (Cond c : conds) {
                 if (c.checkGround.getValue())
                     result = mc.player.onGround;
@@ -437,11 +473,36 @@ public class Fly extends PasteModule {
         }
 
         @Override
-        public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
+        public Value<?> genMainChild() {
+            StringBuilder sb = new StringBuilder("Condition");
+            for (int i = 0; i <= children.size(); i++) {
+                sb.append(i);
+                if (!hasChild(sb.toString())) break;
+                sb.setLength(sb.length() - String.valueOf(i).length());
+            }
+            StringValue n = new StringValue("Name", "Set the name of this action.", sb.toString());
+            Cond val = new Cond(sb.toString(), "") {
+                @Override
+                public boolean rightClickRemove() {
+                    return true;
+                }
 
+                @Override
+                public String getName() {
+                    return n.getValue();
+                }
+            };
+            val.setParent(this);
+            val.addChild(n);
+            return val;
         }
 
-        private static class Cond {
+        @Override
+        public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
+            // Todo
+        }
+
+        private static class Cond extends VoidValue {
             public int ticks;
             public BoolValue checkTicks;
             public NumberValue tickMod;
@@ -459,6 +520,10 @@ public class Fly extends PasteModule {
             public NumberValue aboveYOffset;
             public BoolValue checkGround;
             public BoolValue checkAir;
+
+            public Cond(String name, String description) {
+                super(name, description);
+            }
         }
     }
 }

@@ -63,7 +63,7 @@ public class PositionValue extends Value<Void> {
     }
 
     private void addXYZChildren() {
-        addChild(new NumberValue("X", "Coordinates in X axis", 1d, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL) {
+        addChild(new NumberValue("X", "Coordinates in X axis", 0, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL) {
             @Override
             public String getName() {
                 return isRelative("Yaw") ? "Forwards/Backwards" : "X";
@@ -74,7 +74,7 @@ public class PositionValue extends Value<Void> {
                 return isRelative("Yaw") ? "Coordinates based on yaw (forwards/backwards)" : "Coordinates in X axis";
             }
         });
-        addChild(new NumberValue("XExp", "Exponent of X", 1, -308, 308, 1, NumberValue.NumberType.INTEGER) {
+        addChild(new NumberValue("XExp", "Exponent of X", 0, -308, 308, 1, NumberValue.NumberType.INTEGER) {
             @Override
             public String getName() {
                 return isRelative("Yaw") ? "F/BExp" : "XExp";
@@ -85,9 +85,9 @@ public class PositionValue extends Value<Void> {
                 return isRelative("Yaw") ? "Exponent of the forwards/backwards" : "Exponent of X";
             }
         });
-        addChild(new NumberValue("Y", "Coordinates in Y axis", 1d, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL));
-        addChild(new NumberValue("YExp", "Exponent of Y", 1, -308, 308, 1, NumberValue.NumberType.INTEGER));
-        addChild(new NumberValue("Z", "Coordinates in Z axis", 1d, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL) {
+        addChild(new NumberValue("Y", "Coordinates in Y axis", 0, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL));
+        addChild(new NumberValue("YExp", "Exponent of Y", 0, -308, 308, 1, NumberValue.NumberType.INTEGER));
+        addChild(new NumberValue("Z", "Coordinates in Z axis", 0, -10, 10, 0.000001, NumberValue.NumberType.DECIMAL) {
             @Override
             public String getName() {
                 return isRelative("Yaw") ? "Left/Right" : "Z";
@@ -98,7 +98,7 @@ public class PositionValue extends Value<Void> {
                 return isRelative("Yaw") ? "Coordinates based on yaw (left/right)" : "Coordinates in Z axis";
             }
         });
-        addChild(new NumberValue("XExp", "Exponent of X", 1, -308, 308, 1, NumberValue.NumberType.INTEGER) {
+        addChild(new NumberValue("XExp", "Exponent of X", 0, -308, 308, 1, NumberValue.NumberType.INTEGER) {
             @Override
             public String getName() {
                 return isRelative("Yaw") ? "L/RExp" : "ZExp";
