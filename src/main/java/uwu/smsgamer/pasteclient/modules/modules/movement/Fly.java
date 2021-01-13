@@ -77,7 +77,8 @@ public class Fly extends PasteModule {
 
     @EventTarget
     private void onUpdate(UpdateEvent event) {
-        if (mode.getValue() == 2) advanced.doAction(this);
+        if (!this.getState()) return;
+        if (event.getEventType().equals(EventType.PRE) && mode.getValue() == 2) advanced.doAction(this);
     }
 
     private void setSpoofGround() {
@@ -137,7 +138,7 @@ public class Fly extends PasteModule {
             val.setParent(this);
             settings.add(val);
             return val;
-        } // mmm mmM mMm mMM Mmm MmM MMm MMM
+        }
 
         @Override
         public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
@@ -196,6 +197,17 @@ public class Fly extends PasteModule {
         public void genChildren(Value<?> parentValue, @Nullable JsonObject object) {
             Action a = (Action) parentValue;
             parentValue.addChild(a.packet = new BoolValue("Packet", "Send packet to position.", false));
+            parentValue.addChild(a.posType = new IntChoiceValue("Position Type", "Type for setting position.", 0,
+              new StringHashMap<>(
+                0, "Update",
+                1, "Set",
+                2, "Assign"
+              )) {
+                @Override
+                public boolean isVisible() {
+                    return !a.packet.getValue();
+                }
+            });
             parentValue.addChild(a.spoofGround = new BoolValue("SpoofGround", "Spoofs ground.", false));
             parentValue.addChild(a.groundSpoof = new BoolValue("GroundSpoof", "Spoofs yes or no ground.", false) {
                 @Override
@@ -301,7 +313,18 @@ public class Fly extends PasteModule {
                     CPacketPlayer packet = b.build();
                     mc.player.connection.sendPacket(packet);
                 } else {
-                    mc.player.setPositionAndUpdate(x, y, z);
+                    switch (a.posType.getValue()) {
+                        case 0:
+                            mc.player.setPositionAndUpdate(x, y, z);
+                            break;
+                        case 1:
+                            mc.player.setPosition(x, y, z);
+                            break;
+                        case 2:
+                            mc.player.posX = x;
+                            mc.player.posY = y;
+                            mc.player.posZ = z;
+                    }
                     if (a.spoofGround.getValue()) {
                         fly.spoofGround = true;
                         fly.spoofGroundM = a.groundSpoof.getValue();
@@ -343,6 +366,7 @@ public class Fly extends PasteModule {
 
         private static class Action extends VoidValue {
             public BoolValue packet;
+            public IntChoiceValue posType;
             public BoolValue spoofGround;
             public BoolValue groundSpoof;
             public BoolValue toFloor;
@@ -469,7 +493,7 @@ public class Fly extends PasteModule {
                     result &= (fly.startY + c.belowYOffset.getValue()) < mc.player.posY;
                 if (c.checkAboveStartY.getValue())
                     result &= (fly.startY + c.aboveYOffset.getValue()) > mc.player.posY;
-                ChatUtils.info(c.ticks + ":" + mc.player.ticksExisted + ":" + (c.ticks % c.tickMod.getValue().intValue()));
+                ChatUtils.info(conds.size() + ":" + fly.advanced.settings.size() + ":" + c.ticks + ":" + mc.player.ticksExisted + ":" + (c.ticks % c.tickMod.getValue().intValue()));
                 c.ticks++;
             }
             return result;
