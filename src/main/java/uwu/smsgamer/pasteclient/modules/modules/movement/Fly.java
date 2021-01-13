@@ -72,10 +72,12 @@ public class Fly extends PasteModule {
                 mc.player.motionY = 0;
                 break;
             }
-            case 2: {
-                advanced.doAction(this);
-            }
         }
+    }
+
+    @EventTarget
+    private void onUpdate(UpdateEvent event) {
+        if (mode.getValue() == 2) advanced.doAction(this);
     }
 
     private void setSpoofGround() {
@@ -101,7 +103,7 @@ public class Fly extends PasteModule {
     }
 
     private static class AdvancedSettings extends ChildGen {
-        private final List<CVoid> settings = new ArrayList<>();
+        private final Set<CVoid> settings = new HashSet<>();
 
         public AdvancedSettings(String name, String description) {
             super(name, description);
@@ -135,28 +137,23 @@ public class Fly extends PasteModule {
             val.setParent(this);
             settings.add(val);
             return val;
-        }
+        } // mmm mmM mMm mMM Mmm MmM MMm MMM
 
         @Override
         public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
             JsonObject obj = entry.getValue().getAsJsonObject();
             StringValue n = new StringValue("Name", "Set the name of this event.", obj.get("Name").getAsString());
-            VoidValue val = new VoidValue(entry.getKey(), "") {
-                @Override
-                public boolean rightClickRemove() {
-                    return true;
-                }
-
-                @Override
-                public String getName() {
-                    return n.getValue();
-                }
-            };
+            CVoid val = new CVoid(entry.getKey(), "");
             val.addChild(n);
+            val.name = n;
             val.setParent(this);
             genChildren(val);
-            val.fromJSON(obj);
-        } // todo
+            settings.add(val);
+            addChild(val);
+            JsonObject o = new JsonObject();
+            o.add(entry.getKey(), obj);
+            val.fromJSON(o);
+        }
 
         public void doAction(Fly fly) {
             for (CVoid setting : settings)
@@ -185,7 +182,7 @@ public class Fly extends PasteModule {
     }
 
     private static class ActionSettings extends ChildGen {
-        private final List<Action> actions = new ArrayList<>();
+        private final Set<Action> actions = new HashSet<>();
 
         public ActionSettings() {
             super("Action Settings", "Customize the actions of this event.");
@@ -267,9 +264,9 @@ public class Fly extends PasteModule {
 
         @Override
         public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
-            JsonObject objects = entry.getValue().getAsJsonObject();
-            StringValue n = new StringValue("Name", "Set the name of this value.", objects.get("Name").getAsString());
-            VoidValue val = new VoidValue(entry.getKey(), "") {
+            JsonObject obj = entry.getValue().getAsJsonObject();
+            StringValue n = new StringValue("Name", "Set the name of this action.", obj.get("Name").getAsString());
+            Action val = new Action(entry.getKey(), "") {
                 @Override
                 public boolean rightClickRemove() {
                     return true;
@@ -282,7 +279,12 @@ public class Fly extends PasteModule {
             };
             val.setParent(this);
             val.addChild(n);
-            genChildren(val, objects); // Todo
+            actions.add(val);
+            addChild(val);
+            genChildren(val, obj);
+            JsonObject o = new JsonObject();
+            o.add(entry.getKey(), obj);
+            val.fromJSON(o);
         }
 
         public void doAction(Fly fly) {
@@ -357,7 +359,7 @@ public class Fly extends PasteModule {
     }
 
     private static class ConditionSettings extends ChildGen {
-        private final List<Cond> conds = new ArrayList<>();
+        private final Set<Cond> conds = new HashSet<>();
 
         public ConditionSettings() {
             super("Condition Settings", "Settings for triggering of event.");
@@ -467,6 +469,7 @@ public class Fly extends PasteModule {
                     result &= (fly.startY + c.belowYOffset.getValue()) < mc.player.posY;
                 if (c.checkAboveStartY.getValue())
                     result &= (fly.startY + c.aboveYOffset.getValue()) > mc.player.posY;
+                ChatUtils.info(c.ticks + ":" + mc.player.ticksExisted + ":" + (c.ticks % c.tickMod.getValue().intValue()));
                 c.ticks++;
             }
             return result;
@@ -480,7 +483,7 @@ public class Fly extends PasteModule {
                 if (!hasChild(sb.toString())) break;
                 sb.setLength(sb.length() - String.valueOf(i).length());
             }
-            StringValue n = new StringValue("Name", "Set the name of this action.", sb.toString());
+            StringValue n = new StringValue("Name", "Set the name of this condition.", sb.toString());
             Cond val = new Cond(sb.toString(), "") {
                 @Override
                 public boolean rightClickRemove() {
@@ -499,7 +502,27 @@ public class Fly extends PasteModule {
 
         @Override
         public void loadFromJSON(Map.Entry<String, JsonElement> entry) {
-            // Todo
+            JsonObject obj = entry.getValue().getAsJsonObject();
+            StringValue n = new StringValue("Name", "Set the name of this condition.", obj.get("Name").getAsString());
+            Cond val = new Cond(entry.getKey(), "") {
+                @Override
+                public boolean rightClickRemove() {
+                    return true;
+                }
+
+                @Override
+                public String getName() {
+                    return n.getValue();
+                }
+            };
+            val.setParent(this);
+            val.addChild(n);
+            conds.add(val);
+            addChild(val);
+            genChildren(val);
+            JsonObject o = new JsonObject();
+            o.add(entry.getKey(), obj);
+            val.fromJSON(o);
         }
 
         private static class Cond extends VoidValue {
