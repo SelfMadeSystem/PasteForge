@@ -1,9 +1,18 @@
 package uwu.smsgamer.pasteclient.utils;
 
+import com.google.common.collect.Lists;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.math.*;
+import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
+import net.minecraftforge.event.ForgeEventFactory;
 import uwu.smsgamer.pasteclient.injection.interfaces.*;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class MotionUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
@@ -21,7 +30,7 @@ public class MotionUtils {
     }
 
     public static void timer(float timer) {
-        ((IMixinTimer)((IMixinMinecraft) mc).getTimer()).setTimerSpeed(timer);
+        ((IMixinTimer) ((IMixinMinecraft) mc).getTimer()).setTimerSpeed(timer);
     }
 
     public static void hmult(double amount) {
@@ -56,11 +65,77 @@ public class MotionUtils {
     }
 
     public static void airSpeed(float amount) {
-        ((IMixinEntityPlayer)mc.player).setAirSpeed(amount);
+        ((IMixinEntityPlayer) mc.player).setAirSpeed(amount);
     }
 
     public static void vset(double amount) {
         mc.player.motionY = amount;
+    }
+
+    public static double getFloor() {
+        for (int i = 0; i < mc.player.posY; i++) {
+            List<AxisAlignedBB> list = Lists.newArrayList();
+            if (!getCollisionBoxes(mc.player, mc.player.getEntityBoundingBox().offset(0, -i, 0), false, list)) continue;
+            double max = -1;
+            for (AxisAlignedBB box : list) max = Math.max(box.maxY, max);
+            if (max > -1) return Math.min(mc.player.posY, max);
+        }
+        return 0;
+    }
+
+    public static boolean getCollisionBoxes(@Nullable Entity entity, AxisAlignedBB aabb, boolean $idk$, List<AxisAlignedBB> list) {
+        int i = MathHelper.floor(aabb.minX) - 1;
+        int j = MathHelper.ceil(aabb.maxX) + 1;
+        int k = MathHelper.floor(aabb.minY) - 1;
+        int l = MathHelper.ceil(aabb.maxY) + 1;
+        int i1 = MathHelper.floor(aabb.minZ) - 1;
+        int j1 = MathHelper.ceil(aabb.maxZ) + 1;
+        World world = mc.world;
+        WorldBorder border = world.getWorldBorder();
+        boolean flag = entity != null && entity.isOutsideBorder();
+        boolean flag1 = entity != null && world.isInsideWorldBorder(entity);
+        IBlockState state = Blocks.STONE.getDefaultState();
+        BlockPos.PooledMutableBlockPos pmbp = BlockPos.PooledMutableBlockPos.retain();
+        if ($idk$ && !ForgeEventFactory.gatherCollisionBoxes(world, entity, aabb, list)) {
+            return true;
+        } else {
+            try {
+                for(int k1 = i; k1 < j; ++k1) {
+                    for(int l1 = i1; l1 < j1; ++l1) {
+                        boolean flag2 = k1 == i || k1 == j - 1;
+                        boolean flag3 = l1 == i1 || l1 == j1 - 1;
+                        if ((!flag2 || !flag3) && world.isBlockLoaded(pmbp.setPos(k1, 64, l1))) {
+                            for(int i2 = k; i2 < l; ++i2) {
+                                if (!flag2 && !flag3 || i2 != l - 1) {
+                                    if ($idk$) {
+                                        if (k1 < -30000000 || k1 >= 30000000 || l1 < -30000000 || l1 >= 30000000) return true;
+                                    } else if (entity != null && flag == flag1) {
+                                        entity.setOutsideBorder(!flag1);
+                                    }
+
+                                    pmbp.setPos(k1, i2, l1);
+                                    IBlockState state1;
+                                    if (!$idk$ && !border.contains(pmbp) && flag1) {
+                                        state1 = state;
+                                    } else {
+                                        state1 = world.getBlockState(pmbp);
+                                    }
+
+                                    state1.addCollisionBoxToList(world, pmbp, aabb, list, entity, false);
+                                    if ($idk$ && !ForgeEventFactory.gatherCollisionBoxes(world, entity, aabb, list)) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return !list.isEmpty();
+            } finally {
+                pmbp.release();
+            }
+        }
     }
 
     //Liquidbounce skid

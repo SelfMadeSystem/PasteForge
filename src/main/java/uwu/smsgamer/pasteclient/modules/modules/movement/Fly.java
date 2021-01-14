@@ -113,6 +113,7 @@ public class Fly extends PasteModule {
         @Override
         public void removeChild(Value<?> value) {
             super.removeChild(value);
+            //noinspection SuspiciousMethodCalls
             settings.remove(value);
         }
 
@@ -220,7 +221,7 @@ public class Fly extends PasteModule {
                 public String getDescription() {
                     return a.packet.getValue() ? "Sends packet to floor." : "Teleports to floor.";
                 }
-            }); // Todo: Implement
+            });
             parentValue.addChild(a.position = new PositionValue("Position", "How to set the position.", false));
             parentValue.addChild(a.timer = new NumberValue("Timer",
               "To set the timer to. Set to 0 to have no effect.",
@@ -246,6 +247,7 @@ public class Fly extends PasteModule {
         @Override
         public void removeChild(Value<?> value) {
             super.removeChild(value);
+            //noinspection SuspiciousMethodCalls
             actions.remove(value);
         }
 
@@ -302,7 +304,7 @@ public class Fly extends PasteModule {
         public void doAction(Fly fly) {
             for (Action a : actions) {
                 double x = a.position.getPosX();
-                double y = a.toFloor.getValue() ? 0 : a.position.getPosY();
+                double y = a.toFloor.getValue() ? MotionUtils.getFloor() : a.position.getPosY();
                 double z = a.position.getPosZ();
                 if (a.packet.getValue()) {
                     PacketUtils.CPacketPlayerBuilder b = new PacketUtils.CPacketPlayerBuilder(mc.player, true, false);
@@ -392,6 +394,7 @@ public class Fly extends PasteModule {
         @Override
         public void removeChild(Value<?> value) {
             super.removeChild(value);
+            //noinspection SuspiciousMethodCalls
             conds.remove(value);
         }
 
