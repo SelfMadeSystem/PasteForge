@@ -54,7 +54,7 @@ public abstract class Value<T> {
     }
 
     public Value<?> addChild(Value<?> child) {
-        children.put(child.getName().toLowerCase(), child);
+        children.put(child.getName().toLowerCase().replace(" ", "-"), child);
         child.module = module;
         return child;
     }
@@ -85,8 +85,14 @@ public abstract class Value<T> {
         value = (T) t;
     }
 
+    public abstract boolean setCommandValue(String arg);
+
     public final void setValueRaw(T t) {
         value = t;
+    }
+
+    public final String getRawName() {
+        return name;
     }
 
     public String getName() {

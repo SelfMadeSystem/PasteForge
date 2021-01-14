@@ -15,6 +15,11 @@ public class FancyColorValue extends ColorValue implements Cloneable {
         this(name, description, 0, color, color, 1000);
     }
 
+    @Override
+    public boolean setCommandValue(String arg) {
+        return false; // Has no value
+    }
+
     public FancyColorValue(String name, String description, int modeV, Color mainV, Color secondV, int speedV) {
         super(name, description, mainV);
         addChild(mode = new IntChoiceValue("Mode", "Mode for this fancy color value.", modeV,

@@ -58,6 +58,7 @@ public class BlockClickGUI extends GuiScreen { // TODO: Keybind
         renderer = new ClientBaseRendererImpl(consolas);
     }
 
+    public String moduleName = "";
     public String currentDescription = "";
 
     private final BlockGUI blockGUI = new CategoryGUI();
@@ -95,6 +96,14 @@ public class BlockClickGUI extends GuiScreen { // TODO: Keybind
             renderer.drawRect(0, getMidScreenY() * 2 - height - 6, width + 10, height + 6, Color.BLACK);
             renderer.drawOutline(0, getMidScreenY() * 2 - height - 6, width + 10, height + 6, 2, Color.WHITE);
             renderer.drawString(4, getMidScreenY() * 2 - height - 4, currentDescription, Color.WHITE);
+        }
+        if (moduleName != null && !moduleName.isEmpty()) {
+            final String text = "Internal Name: " + moduleName;
+            int height = renderer.getStringHeight(text);
+            int width = renderer.getStringWidth(text);
+            renderer.drawRect(getMidScreenX() * 2 - width - 12, getMidScreenY() * 2 - height - 6, width + 10, height + 6, Color.BLACK);
+            renderer.drawOutline(getMidScreenX() * 2 - width - 9, getMidScreenY() * 2 - height - 6, width + 10, height + 6, 2, Color.WHITE);
+            renderer.drawString(getMidScreenX() * 2 - width - 6, getMidScreenY() * 2 - height - 4, text, Color.WHITE);
         }
         lastRender = now;
     }

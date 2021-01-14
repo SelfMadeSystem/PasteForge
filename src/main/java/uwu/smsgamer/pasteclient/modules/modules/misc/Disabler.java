@@ -54,6 +54,11 @@ public class Disabler extends PasteModule {
       new StringHashMap<>(CPacketClientStatus.State.PERFORM_RESPAWN, "PERFORM_RESPAWN",
         CPacketClientStatus.State.REQUEST_STATS, "REQUEST_STATS")) {
         @Override
+        public CPacketClientStatus.State getCommandT(String arg) {
+            return CPacketClientStatus.State.valueOf(arg);
+        }
+
+        @Override
         public boolean isVisible() {
             return sendPacket.getValue().equals(CPacketClientStatus.class);
         }

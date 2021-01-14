@@ -1,6 +1,7 @@
 package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
+import uwu.smsgamer.pasteclient.command.CommandException;
 import uwu.smsgamer.pasteclient.gui.clickgui.utils.Utils;
 import uwu.smsgamer.pasteclient.utils.MathUtil;
 
@@ -45,6 +46,19 @@ public class NumberValue extends Value<Double> {
     @Override
     public void setValue(Object val) {
         setValue(((Number) val).doubleValue());
+    }
+
+    @Override
+    public boolean setCommandValue(String arg) {
+        double doubleValue;
+        try {
+            doubleValue = Double.parseDouble(arg);
+        } catch (NumberFormatException e) {
+            throw new CommandException("Not a valid number: " + arg + "!");
+        }
+        if (type.equals(NumberValue.NumberType.INTEGER)) setValue(doubleValue);
+        else value = doubleValue;
+        return true;
     }
 
     public void setValue(Double val) {

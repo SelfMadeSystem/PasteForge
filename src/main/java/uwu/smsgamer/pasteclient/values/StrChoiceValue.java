@@ -10,6 +10,11 @@ public class StrChoiceValue extends ChoiceValue<String> {
     }
 
     @Override
+    public String getCommandT(String arg) {
+        return arg;
+    }
+
+    @Override
     public JsonElement toElement() {
         return new JsonPrimitive(value);
     }

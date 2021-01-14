@@ -1,11 +1,12 @@
 package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
+import uwu.smsgamer.pasteclient.command.CommandException;
 import uwu.smsgamer.pasteclient.utils.StringHashMap;
 
 import java.util.Collection;
 
-public class ChoiceValue<T> extends Value<T> {
+public abstract class ChoiceValue<T> extends Value<T> {
 
     protected StringHashMap<T> choices;
 
@@ -25,6 +26,16 @@ public class ChoiceValue<T> extends Value<T> {
     @Override
     public String getValStr() {
         return choices.get(value);
+    }
+
+    public abstract T getCommandT(String arg);
+
+    @Override
+    public boolean setCommandValue(String arg) {
+        T newValue = getCommandT(arg);
+        if (!choices.containsKey(newValue)) return false;
+        value = newValue;
+        return true;
     }
 
     public Collection<String> getChoicesAsString(T t) {

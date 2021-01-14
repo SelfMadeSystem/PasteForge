@@ -4,6 +4,7 @@ import com.google.gson.*;
 import uwu.smsgamer.pasteclient.utils.Colour;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 
 public class ColorValue extends Value<Color> {
     private Colour.RGB rgb;
@@ -53,6 +54,39 @@ public class ColorValue extends Value<Color> {
         } else {
             throw new IllegalArgumentException("Value is not acceptable: " + value.toString());
         }
+    }
+
+    @Override
+    public boolean setCommandValue(String arg) {
+        boolean swH = arg.startsWith("#");
+        if (swH) {
+            arg = arg.substring(1);
+        }
+
+        if (arg.length() == 6) {
+            try {
+                setColor(hex2Rgb(arg));
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        if (swH) return false; // We don't want "#Yellow" lol
+        try {
+            char c = arg.charAt(0);
+            c = Character.toLowerCase(c);
+            Field field = Color.class.getField(c + arg.substring(1));
+            setColor((Color) field.get(null));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static Color hex2Rgb(String colorStr) {
+        return new Color(
+          Integer.valueOf( colorStr.substring( 1, 3 ), 16 ),
+          Integer.valueOf( colorStr.substring( 3, 5 ), 16 ),
+          Integer.valueOf( colorStr.substring( 5, 7 ), 16 ) );
     }
 
     public void setColor(Color color) {

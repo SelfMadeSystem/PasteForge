@@ -27,7 +27,7 @@ public class ValueCommand extends Command {
     @Override
     public void run(String alias, @NotNull String[] args) {
         if (args.length < 3)
-            throw new CommandException("Usage: ." + alias + " <module> <name> [2nd name] [3rd name...] <value>");
+            throw new CommandException("Usage: ." + alias + " <module> <internal name> [2nd] [3rd...] <value>");
 
         Value<?> value;
         {
@@ -41,44 +41,14 @@ public class ValueCommand extends Command {
             value = value.getChild(args[i]);
             if (value == null) throw new CommandException("Value: " + args[i] + " does not exist!");
         }
-        String lastArg = args[args.length - 1];
-        if (value instanceof BoolValue) {
-            if (lastArg.equalsIgnoreCase("true") ||
-              lastArg.equalsIgnoreCase("yes") ||
-              lastArg.equalsIgnoreCase("on") ||
-              lastArg.equalsIgnoreCase("enable") ||
-              lastArg.equalsIgnoreCase("enabled")) {
-                value.setValue(true);
-            } else if (lastArg.equalsIgnoreCase("toggle") ||
-              lastArg.equalsIgnoreCase("switch")) {
-                value.setValue(!((BoolValue) value).getValue());
-            } else value.setValue(false);
-        } else if (value instanceof NumberValue) {
-            Double doubleValue;
-            try {
-                doubleValue = Double.parseDouble(lastArg);
-            } catch (NumberFormatException e) {
-                throw new CommandException("Not a valid number: " + lastArg + "!");
-            }
-            if (((NumberValue) value).getType().equals(NumberValue.NumberType.INTEGER))
-                ((NumberValue) value).setValue(doubleValue);
-            else
-                ((NumberValue) value).setValueRaw(doubleValue);
-        } else if (value instanceof IntChoiceValue) {
-            int doubleValue;
-            try {
-                doubleValue = Integer.parseInt(lastArg);
-            } catch (NumberFormatException e) {
-                throw new CommandException("Not a valid number: " + lastArg + "!");
-            }
-            value.setValue(doubleValue);
-        }
-        ChatUtils.success(value.getName() + " was set to: " + value.getValue());
+
+        if (value.setCommandValue(args[args.length -1])) ChatUtils.success(value.getName() + " was set to: " + value.getValue());
+        else ChatUtils.info(value.getName() + "'s value is: " + value.getValStr());
     }
 
     @NotNull
     @Override
-    public List<String> autocomplete(int arg, String[] args) {
+    public List<String> autocomplete(int arg, String[] args) { // TODO THIS PLEASE
         return new ArrayList<>();
     }
 }

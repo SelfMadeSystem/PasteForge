@@ -25,14 +25,20 @@ public class ESP extends PasteModule {
         super("ESP", "Outlines entities", ModuleCategory.RENDER);
         if (instance != null) throw new RuntimeException("tf");
         instance = this;
-        //noinspection unchecked
-        this.mode = (ChoiceValue<ESPModule>) addValue(new ChoiceValue<ESPModule>("Mode", "Mode for ESP.",
-          BoxESP.getInstance(), new StringHashMap<>(BoxESP.getInstance(), "Box",
+        final StringHashMap<ESPModule> map = new StringHashMap<>(BoxESP.getInstance(), "Box",
           new HitBoxESP(), "HitBox",
           new OutlineBoxESP(), "OutlineBox",
           new CylinderESP(), "Cylinder",
           new OutlinedCylinderESP(), "Cylinder Outlined",
-          new DickESP(), "Dick")));
+          new DickESP(), "Dick");
+        this.mode = new ChoiceValue<ESPModule>("Mode", "Mode for ESP.",
+          BoxESP.getInstance(), map) {
+            @Override
+            public ESPModule getCommandT(String arg) {
+                return map.getReversedMap().get(arg);
+            }
+        };
+        addValue(this.mode);
     }
 
     @EventTarget

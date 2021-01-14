@@ -1,6 +1,7 @@
 package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
+import uwu.smsgamer.pasteclient.command.CommandException;
 import uwu.smsgamer.pasteclient.utils.*;
 
 public class RangeValue extends Value<Pair<Double, Double>> { // FIXME: 2020-11-30 FIX ME!!!!!!!!!!!!! I'm broken!!!!!!!
@@ -45,6 +46,33 @@ public class RangeValue extends Value<Pair<Double, Double>> { // FIXME: 2020-11-
         } else {
             new IllegalArgumentException("Invalid argument: " + val).printStackTrace();
         }
+    }
+
+    @Override
+    public boolean setCommandValue(String arg) {
+        String[] split = arg.split(":");
+        if (split.length != 2)
+            throw new CommandException("Invalid format. Format expected: " + ChatUtils.SECONDARY_COLOR +"min:max");
+        String at = split[0];
+        double min;
+        double max;
+
+        try {
+            min = Double.parseDouble(at);
+            at = split[1];
+            max = Double.parseDouble(at);
+        } catch (NumberFormatException e) {
+            throw new CommandException("Invalid double: " + at);
+        }
+
+        if (min > max) {
+            setMax(min);
+            setMin(max);
+        } else {
+            setMin(min);
+            setMax(max);
+        }
+        return true;
     }
 
     public void setMin(Double val) {

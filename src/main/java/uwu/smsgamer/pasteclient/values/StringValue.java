@@ -9,6 +9,12 @@ public class StringValue extends Value<String> {
     }
 
     @Override
+    public boolean setCommandValue(String arg) {
+        value = arg;
+        return true;
+    }
+
+    @Override
     public JsonElement toElement() {
         return new JsonPrimitive(value);
     }

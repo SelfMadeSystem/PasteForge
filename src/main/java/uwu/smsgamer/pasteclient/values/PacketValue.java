@@ -132,6 +132,11 @@ public class PacketValue extends ChoiceValue<Class<? extends Packet<?>>> {
     }
 
     @Override
+    public Class<? extends Packet<?>> getCommandT(String arg) {
+        return packetChoices.getReversedMap().get(arg);
+    }
+
+    @Override
     public JsonElement toElement() {
         return new JsonPrimitive(choices.get(value));
     }

@@ -9,6 +9,21 @@ public class BoolValue extends Value<Boolean> {
     }
 
     @Override
+    public boolean setCommandValue(String arg) {
+        if (arg.equalsIgnoreCase("true") ||
+          arg.equalsIgnoreCase("yes") ||
+          arg.equalsIgnoreCase("on") ||
+          arg.equalsIgnoreCase("enable") ||
+          arg.equalsIgnoreCase("enabled")) {
+            value = true;
+        } else if (arg.equalsIgnoreCase("toggle") ||
+          arg.equalsIgnoreCase("switch")) {
+            value = !value;
+        } else value = false;
+        return true;
+    }
+
+    @Override
     public JsonElement toElement() {
         return new JsonPrimitive(value);
     }

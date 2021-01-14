@@ -33,8 +33,10 @@ public abstract class ValueBlock extends BlockComponent {
         if (canSelect() && isHovering(mouseX, mouseY)) {
             wasSet = true;
             BlockClickGUI.getInstance().currentDescription = value.getDescription();
+            BlockClickGUI.getInstance().moduleName = value.getRawName().toLowerCase().replace(" ", "-");
         } else if (wasSet) {
             BlockClickGUI.getInstance().currentDescription = "";
+            BlockClickGUI.getInstance().moduleName = "";
             wasSet = false;
         }
     }

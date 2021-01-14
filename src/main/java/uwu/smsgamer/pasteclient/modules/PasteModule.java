@@ -188,7 +188,7 @@ public abstract class PasteModule { //TODO: ALSO NEED TO BE REDONE
 
     public Value<?> addValue(Value<?> val) {
         val.module = this;
-        values.put(val.getName().toLowerCase(), val);
+        values.put(val.getName().toLowerCase().replace(" ", "-"), val);
         return val;
     }
 }

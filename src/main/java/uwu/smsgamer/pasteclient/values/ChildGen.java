@@ -5,9 +5,9 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 
-public abstract class ChildGen extends Value<Void> {
+public abstract class ChildGen extends VoidValue {
     public ChildGen(String name, String description) {
-        super(name, description, null);
+        super(name, description);
     }
 
     @Override

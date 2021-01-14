@@ -1,7 +1,6 @@
 package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.Map;
 

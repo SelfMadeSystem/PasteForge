@@ -2,10 +2,9 @@ package uwu.smsgamer.pasteclient.values;
 
 import com.google.gson.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.MathHelper;
 import uwu.smsgamer.pasteclient.utils.*;
 
-public class PositionValue extends Value<Void> {
+public class PositionValue extends VoidValue {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private boolean relativeX = false;
     private boolean relativeY = false;
@@ -13,7 +12,7 @@ public class PositionValue extends Value<Void> {
     private boolean relativeYaw = false;
 
     public PositionValue(String name, String description) {
-        super(name, description, null);
+        super(name, description);
         addXYZChildren();
         addChild(new BoolValue("RelativeX", "Whether the X is relative to the player or not.", true));
         addChild(new BoolValue("RelativeY", "Whether the Y is relative to the player or not.", true));
@@ -22,7 +21,7 @@ public class PositionValue extends Value<Void> {
 
     // For SET relatives
     public PositionValue(String name, String description, boolean relativeX, boolean relativeY, boolean relativeZ, int i) {
-        super(name, description, null);
+        super(name, description);
         addXYZChildren();
         this.relativeX = relativeX;
         this.relativeY = relativeY;
@@ -31,7 +30,7 @@ public class PositionValue extends Value<Void> {
 
     // Defaults
     public PositionValue(String name, String description, boolean relativeX, boolean relativeY, boolean relativeZ) {
-        super(name, description, null);
+        super(name, description);
         addXYZChildren();
         addChild(new BoolValue("RelativeX", "Whether the X is relative to the player or not.", relativeX));
         addChild(new BoolValue("RelativeY", "Whether the Y is relative to the player or not.", relativeY));
@@ -43,7 +42,7 @@ public class PositionValue extends Value<Void> {
 
     // For Yaw
     public PositionValue(String name, String description, boolean relativeYaw) {
-        super(name, description, null);
+        super(name, description);
         addXYZChildren();
         BoolValue yawR = (BoolValue) addChild(new BoolValue("RelativeYaw", "Whether the position is relative to the player's yaw or not.", relativeYaw));
         addChild(new BoolValue("RelativeX", "Whether the X is relative to the player or not.", relativeX) {
