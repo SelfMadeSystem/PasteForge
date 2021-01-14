@@ -3,9 +3,10 @@ package uwu.smsgamer.pasteclient.discordrpc;
 import net.arikia.dev.drpc.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.multiplayer.GuiConnecting;
+import net.minecraft.client.multiplayer.*;
 import net.minecraftforge.fml.client.GuiModsMissingForServer;
 import uwu.smsgamer.pasteclient.PasteClient;
+import uwu.smsgamer.pasteclient.utils.ChatUtils;
 
 public class RPCManager { // Make customizable via module
     private static RPCManager instance;
@@ -44,7 +45,11 @@ public class RPCManager { // Make customizable via module
         updatePresence("Playing in single player.");
     }
 
-    public void autoDetectPresence() {
+    public void updatePresence() {
+        Throwable thr = new Throwable();
+        System.out.println("autoDetectPresence:" + thr.getStackTrace()[1] + ":" + Minecraft.getMinecraft().isSingleplayer() + ":" +
+          toString(Minecraft.getMinecraft().getCurrentServerData()) + ":" +
+          Minecraft.getMinecraft().currentScreen);
         if (Minecraft.getMinecraft().isSingleplayer() ||
           (Minecraft.getMinecraft().getCurrentServerData() != null &&
           Minecraft.getMinecraft().getCurrentServerData().isOnLAN())) {
@@ -58,6 +63,11 @@ public class RPCManager { // Make customizable via module
         } else {
             serverPresence(Minecraft.getMinecraft().getCurrentServerData().serverIP);
         }
+    }
+
+    private static String toString(ServerData data) {
+        if (data == null) return "null";
+        return "ServerData{" + data.isOnLAN() + "}";
     }
 
     public void updatePresence(String text) {

@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import uwu.smsgamer.pasteclient.command.CommandManager;
 import uwu.smsgamer.pasteclient.discordrpc.RPCManager;
+import uwu.smsgamer.pasteclient.events.forgevents.ForgeEventHandler;
 import uwu.smsgamer.pasteclient.fileSystem.FileManager;
 import uwu.smsgamer.pasteclient.modules.ModuleManager;
 
@@ -28,7 +29,7 @@ public class PasteClient {
     public static final String CLIENT_NAME = "PasteClient";
     @NotNull
     public static final String CLIENT_AUTHOR = "Sms_Gamer_3808";
-    public static final double CLIENT_VERSION_NUMBER = 1.0;
+    public static final double CLIENT_VERSION_NUMBER = 0.1;
     @NotNull
     public static final String CLIENT_VERSION = CLIENT_VERSION_NUMBER + "-DEV";
     @NotNull
@@ -75,7 +76,10 @@ public class PasteClient {
         moduleManager.addModules();
 
         fileManager.load();
-        RPCManager.getInstance().autoDetectPresence();
+
+        ForgeEventHandler.getInstance();
+
+        RPCManager.getInstance().menuPresence();
     }
 
     public void stopClient() {

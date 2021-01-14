@@ -82,11 +82,6 @@ public class MixinMinecraft implements IMixinMinecraft {
         }
     }
 
-    @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
-    public void loadWorld(WorldClient p_loadWorld_1_, String p_loadWorld_2_, CallbackInfo ci) {
-        RPCManager.getInstance().autoDetectPresence();
-    }
-
 
     @Override
     public Session getSession() {

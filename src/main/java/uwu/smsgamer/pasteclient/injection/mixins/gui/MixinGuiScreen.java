@@ -12,15 +12,12 @@ package uwu.smsgamer.pasteclient.injection.mixins.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import uwu.smsgamer.pasteclient.PasteClient;
+import net.minecraftforge.fml.relauncher.*;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import uwu.smsgamer.pasteclient.PasteClient;
 import uwu.smsgamer.pasteclient.discordrpc.RPCManager;
 
 @Mixin(GuiScreen.class)
@@ -38,10 +35,5 @@ public class MixinGuiScreen {
 
             ci.cancel();
         }
-    }
-
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void init(CallbackInfo ci) {
-        RPCManager.getInstance().autoDetectPresence();
     }
 }
