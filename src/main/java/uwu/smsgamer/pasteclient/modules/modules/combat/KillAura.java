@@ -28,7 +28,8 @@ public class KillAura extends PasteModule {
       2, "Switch");
     public IntChoiceValue aimMode = addIntChoice("AimMode", "How to aim at entities.", 0,
       0, "Normal",
-      1, "GCD Patch");
+      1, "GCD Patch",
+      2, "Emulate MouseHelper");
     public IntChoiceValue aimWhere = addIntChoice("AimWhere", "Where to aim on the entity.", 0,
       0, "Auto",
       1, "Top",
@@ -151,11 +152,19 @@ public class KillAura extends PasteModule {
                     prevPitch = pitch;
                     yaw += RotationUtil.angleDiff(rotation.yaw.floatValue(), yaw);
                     pitch = rotation.pitch.floatValue();
-                    if (!silent.getValue()) rotation.toPlayer();
+                    break;
+                case 2:
+                    int amtX = MathUtil.toMouse(RotationUtil.angleDiff(rotation.yaw.floatValue(), yaw));
+                    int amtY = MathUtil.toMouse(RotationUtil.angleDiff(rotation.pitch.floatValue(), pitch));
+                    double aX = MathUtil.toDeg(amtX);
+                    double aY = MathUtil.toDeg(amtY);
+                    yaw += aX;
+                    pitch += aY;
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + aimMode.getValue());
             }
+            if (!silent.getValue()) rotation.toPlayer();
             attack();
         } else {
             prevYaw = yaw;

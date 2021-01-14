@@ -60,6 +60,10 @@ public class MathUtil {
         return Math.floor(val * (1d / inc)) / (1d / inc);
     }
 
+    public static int toMouse(Number deg) {
+        return toMouse(deg.floatValue());
+    }
+
     public static int toMouse(float deg) {
         float var13 = Minecraft.getMinecraft().gameSettings.mouseSensitivity * 0.6F + 0.2F;
         float var14 = var13 * var13 * var13 * 8.0F;
